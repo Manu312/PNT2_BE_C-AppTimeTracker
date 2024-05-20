@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   placeholder: {
-    color: '#003f5c',
+    color: 'rgba(0, 63, 92, 0.5)',
   },
   loginBtn: {
     width: '80%',
