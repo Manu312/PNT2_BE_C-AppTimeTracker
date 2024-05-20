@@ -1,15 +1,44 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function LoginScreen() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const usernameOpacity = useSharedValue(username ? 0 : 1);
-  const passwordOpacity = useSharedValue(password ? 0 : 1);
+export default function LoginScreen({ navigation }) {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const usernameOpacity = useSharedValue(username ? 0 : 1);
+    const passwordOpacity = useSharedValue(password ? 0 : 1);
 
-  const handleLogin = () => {
-    Alert.alert('Login', `Username: ${username}\nPassword: ${password}`);
+  const handleLogin = async () => {
+    try {
+        console.log(username, password);
+      const response = await fetch('http://192.168.1.33:8000/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'X-Powered-By': 'Express', 
+            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Length': '298',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        // Save the token if needed, and navigate to the home screen
+        Alert.alert('Login Successful', 'Welcome!');
+        await AsyncStorage.setItem('token', JSON.stringify(result.token));
+        navigation.replace('HomeScreen');
+      } else {
+        Alert.alert('Login Failed', result.error);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+      console.error(error);
+    }
   };
 
   const handleFocus = (opacity) => {
