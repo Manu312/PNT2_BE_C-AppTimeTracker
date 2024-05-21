@@ -25,15 +25,14 @@ export default function LoginScreen({ navigation }) {
           password,
         }),
       });
+      console.log("response", response);
       const result = await response.json();
 
       if (response.ok) {
-        // Save the token if needed, and navigate to the home screen
-        Alert.alert('Login Successful', 'Welcome!');
         await AsyncStorage.setItem('token', JSON.stringify(result.token));
         navigation.replace('HomeScreen');
       } else {
-        Alert.alert('Login Failed', result.error);
+        Alert.alert('Login Failed Password or username incorrect', result.error);
       }
     } catch (error) {
       Alert.alert('Error', 'Something went wrong. Please try again.');
@@ -111,7 +110,7 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
           <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
           <Text style={styles.registerText}>Registrarse</Text>
         </TouchableOpacity>
         <TouchableOpacity>
