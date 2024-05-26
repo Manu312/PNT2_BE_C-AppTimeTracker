@@ -1,22 +1,67 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, FlatList, Button } from "react-native";
+import CardStats from "../components/CardStats";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
+  const DATA = [
+    {
+      price: 20000,
+      title: "First Item",
+    },
+    {
+      price: 110000,
+      title: "Second Item",
+    },
+    {
+      price: 44000,
+      title: "Third Item",
+    },
+  ];
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Welcome to the Home Screen!</Text>
-    </View>
+    <>
+      <View style={styles.buttonC}>
+        <Button
+          title="agregar"
+          onPress={() => {
+            navigation.navigate("CreateProject");
+          }}
+        />
+      </View>
+      <View style={styles.container}>
+        <Text style={styles.text}>Welcome to the Home Screen!</Text>
+        <View>
+          <Text>Statsss</Text>
+        </View>
+        <View style={styles.containercard}>
+          <FlatList
+            data={DATA}
+            renderItem={({ item }) => (
+              <CardStats name={item.title} price={item.price} />
+            )}
+          />
+        </View>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  buttonC: {
+    marginTop: 50,
+  },
+
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  containercard: {
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
   },
 });
