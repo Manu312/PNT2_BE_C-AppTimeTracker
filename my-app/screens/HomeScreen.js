@@ -33,12 +33,16 @@ export default function HomeScreen({ navigation }) {
           <Text>Statsss</Text>
         </View>
         <View style={styles.containercard}>
+        {DATA.length === 0 ? (
+            <Text>No tenes ningún proyecto</Text>
+          ) :(
           <FlatList
             data={DATA}
             renderItem={({ item }) => (
               <CardStats name={item.title} price={item.price} />
             )}
           />
+          )}
         </View>
       </View>
     </>
