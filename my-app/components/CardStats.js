@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "@rneui/themed";
-const CardStats = ({ price, name }) => {
+const CardStats = ({ price, name, navigation }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate("ProjectScreen")}>
       <Card containerStyle={styles.cardContainer}>
         <Card.Title style={styles.projectTitle}>{name}</Card.Title>
         <View style={styles.cardContent}>

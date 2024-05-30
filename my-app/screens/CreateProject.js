@@ -15,9 +15,10 @@ import Animated, {
 } from "react-native-reanimated";
 import axios from "axios";
 
-const CreateProject = () => {
+const CreateProject = ({navigation}) => {
   const [projectName, setProjectName] = useState("");
   const [pricePerHour, setPricePerHour] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const projectNameOpacity = useSharedValue(projectName ? 0 : 1);
   const pricePerHourOpacity = useSharedValue(projectName ? 0 : 1);
@@ -56,19 +57,30 @@ const CreateProject = () => {
   };
 
   const sendData = async () => {
+    if (projectName === "" || pricePerHour === "") {
+      setErrorMessage("No se olvide de llenar el formulario");
+      return;
+    }
+
+    setErrorMessage(""); 
     console.log("Project name: ", projectName);
     console.log("Price per hour: ", pricePerHour);
 
-    const data = await axios.post(
-      "http://192.168.100.56:8000/api/v1/auth/test",
-      {
-        project_name: projectName,
-        price_per_hour: pricePerHour,
-        boca: "boca",
-      }
-    );
-    console.log(data.data);
-  };
+    try {
+      /*const data = await axios.post(
+        "http://192.168.100.56:8000/api/v1/auth/test",
+        {
+          project_name: projectName,
+          price_per_hour: pricePerHour,
+          boca: "boca",
+        }
+      );
+      console.log(data.data);*/
+      navigation.navigate("HomeScreen");
+    } catch (error) {
+      console.error("Error sending data: ", error);
+    }
+  }
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
@@ -119,6 +131,11 @@ const CreateProject = () => {
           />
         </View>
 
+        {errorMessage ? (
+          <TextInput style={styles.errorText}>{errorMessage}</TextInput>
+        ) : null}
+
+
         <Button
           title="Enviar"
           onPress={() => {
@@ -133,6 +150,11 @@ const CreateProject = () => {
 export default CreateProject;
 
 const styles = StyleSheet.create({
+  errorText: {
+    color: "red",
+    fontSize: 20,
+    marginBottom: 20,
+  },
   container: {
     flex: 1,
     justifyContent: "center",

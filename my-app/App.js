@@ -5,6 +5,7 @@ import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import CreateProject from "./screens/CreateProject";
+import ProjectScreen from "./screens/ProjectScreen";
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,11 @@ function App() {
         <Stack.Screen
           name="CreateProject"
           component={CreateProject}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProjectScreen"
+          component={ProjectScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

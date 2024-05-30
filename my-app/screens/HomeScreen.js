@@ -39,7 +39,7 @@ export default function HomeScreen({ navigation }) {
           <FlatList
             data={DATA}
             renderItem={({ item }) => (
-              <CardStats name={item.title} price={item.price} />
+              <CardStats name={item.title} price={item.price} navigation={navigation}/>
             )}
           />
           )}
