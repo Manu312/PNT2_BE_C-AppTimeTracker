@@ -29,16 +29,19 @@ const styles = StyleSheet.create({
     elevation: 3,
     width: 150,
     height: 150,
+    backgroundColor: "#f8f8f8",
+    borderColor: "#003f5c",
   },
   projectTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#fb5b5a",
   },
   cardContent: {
     alignItems: "center",
   },
   earningsText: {
-    fontSize: 36,
+    fontSize: 30,
     fontWeight: "bold",
     marginVertical: 10,
   },

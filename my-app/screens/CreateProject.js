@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   View,
   StyleSheet,
+  Text,
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
@@ -85,6 +86,7 @@ const CreateProject = ({navigation}) => {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
+      <Text style={styles.logo}>Crea tu proyecto</Text>
         <View style={styles.inputView}>
           <Animated.Text
             style={[styles.placeholder, projectNamePlaceholderStyle]}
@@ -151,14 +153,21 @@ export default CreateProject;
 
 const styles = StyleSheet.create({
   errorText: {
-    color: "red",
+    color: "#fb5b5a",
     fontSize: 20,
     marginBottom: 20,
+  },
+  logo: {
+    fontWeight: 'bold',
+    fontSize: 30,
+    color: '#fb5b5a',
+    marginBottom: 40,
   },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: '#F8F8F8',
   },
   inputView: {
     width: "80%",

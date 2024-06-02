@@ -6,6 +6,8 @@ import HomeScreen from "./screens/HomeScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import CreateProject from "./screens/CreateProject";
 import ProjectScreen from "./screens/ProjectScreen";
+import { TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Stack = createStackNavigator();
 
@@ -26,7 +28,23 @@ function App() {
         <Stack.Screen
           name="HomeScreen"
           component={HomeScreen}
-          options={{ headerShown: false }}
+          options={({ navigation }) => ({
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: '#F8F8F8',
+            },
+            headerTitleStyle: {
+              color: '#fb5b5a',
+            },
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("CreateProject")}
+                style={{ marginRight: 10 }}
+              >
+                <Icon name="plus" size={24} />
+              </TouchableOpacity>
+            ),
+          })}
         />
         <Stack.Screen
           name="CreateProject"

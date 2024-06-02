@@ -19,14 +19,6 @@ export default function HomeScreen({ navigation }) {
   ];
   return (
     <>
-      <View style={styles.buttonC}>
-        <Button
-          title="agregar"
-          onPress={() => {
-            navigation.navigate("CreateProject");
-          }}
-        />
-      </View>
       <View style={styles.container}>
         <Text style={styles.text}>Welcome to the Home Screen!</Text>
         <View>
@@ -58,6 +50,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: '#F8F8F8',
   },
   text: {
     fontSize: 24,
