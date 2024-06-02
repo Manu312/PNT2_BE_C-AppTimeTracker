@@ -3,7 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "@rneui/themed";
 const CardStats = ({ price, name, navigation }) => {
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("ProjectScreen")}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("ProjectScreen", {
+          name: name,
+          price: price,
+        })
+      }
+    >
       <Card containerStyle={styles.cardContainer}>
         <Card.Title style={styles.projectTitle}>{name}</Card.Title>
         <View style={styles.cardContent}>
