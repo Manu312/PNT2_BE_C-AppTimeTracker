@@ -6,6 +6,7 @@ import HomeScreen from "./screens/HomeScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import CreateProject from "./screens/CreateProject";
 import ProjectScreen from "./screens/ProjectScreen";
+import CreateJornada from "./screens/CreateJornada";
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -54,6 +55,28 @@ function App() {
         <Stack.Screen
           name="ProjectScreen"
           component={ProjectScreen}
+          options={({ navigation }) => ({
+            headerLeft: null,
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: '#F8F8F8',
+            },
+            headerTitleStyle: {
+              color: '#fb5b5a',
+            },
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("CreateJornada")}
+                style={{ marginRight: 10 }}
+              >
+                <Icon name="plus" size={24} />
+              </TouchableOpacity>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="CreateJornada"
+          component={CreateJornada}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
