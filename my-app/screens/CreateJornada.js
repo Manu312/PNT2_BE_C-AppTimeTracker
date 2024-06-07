@@ -15,12 +15,20 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import axios from "axios";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { format } from 'date-fns';
 
 const CreateProject = ({navigation}) => {
   const [projectName, setProjectName] = useState("");
   const [pricePerHour, setPricePerHour] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [showDateTimePicker, setShowDateTimePicker] = useState(true);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
+  const [showEndDateTimePicker, setShowEndDateTimePicker] = useState(true);
+ 
   const projectNameOpacity = useSharedValue(projectName ? 0 : 1);
   const pricePerHourOpacity = useSharedValue(projectName ? 0 : 1);
 
@@ -43,6 +51,34 @@ const CreateProject = ({navigation}) => {
       duration: 300,
       easing: Easing.inOut(Easing.ease),
     });
+  };
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setSelectedDate(date);
+    hideDatePicker();
+    setShowDateTimePicker(false);
+  };
+
+  const showEndDatePicker = () => {
+    setEndDatePickerVisibility(true);
+  };
+  
+  const hideEndDatePicker = () => {
+    setEndDatePickerVisibility(false);
+  };
+
+  const handleEndConfirm = (date) => {
+    setSelectedEndDate(date);
+    hideEndDatePicker();
+    setShowEndDateTimePicker(false);
   };
 
   const handleBlur = (value, opacity) => {
@@ -86,7 +122,7 @@ const CreateProject = ({navigation}) => {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-      <Text style={styles.logo}>Crea tu proyecto</Text>
+      <Text style={styles.logo}>Anotá tu jornada</Text>
         <View style={styles.inputView}>
           <Animated.Text
             style={[styles.placeholder, projectNamePlaceholderStyle]}
@@ -94,6 +130,7 @@ const CreateProject = ({navigation}) => {
             Project name
           </Animated.Text>
           <TextInput
+            keyboardType="datetime" 
             style={styles.inputText}
             onChangeText={(text) => {
               setProjectName(text);
@@ -132,6 +169,43 @@ const CreateProject = ({navigation}) => {
             onBlur={() => handleBlur(pricePerHour, pricePerHourOpacity)}
           />
         </View>
+        {showDateTimePicker && (
+          <Button
+            title="Seleccionar fecha de inicio"
+            onPress={showDatePicker}
+          />
+        )}
+        {!showDateTimePicker && (
+          <Text style={styles.selectedDateText}>
+            Fecha inicio: {selectedDate ? format(selectedDate, 'dd/MM/yyyy HH:mm') : ""}
+          </Text>
+        )}
+        {showEndDateTimePicker && (
+          <Button
+            title="Seleccionar fecha de cierre"
+            onPress={showEndDatePicker}
+          />
+        )}
+        {!showEndDateTimePicker && (
+          <Text style={styles.selectedDateText}>
+            Fecha cierre: {selectedEndDate ? format(selectedEndDate, 'dd/MM/yyyy HH:mm') : ""}
+          </Text>
+        )}
+
+
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="datetime"
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
+        />
+
+        <DateTimePickerModal
+          isVisible={isEndDatePickerVisible}
+          mode="datetime"
+          onConfirm={handleEndConfirm}
+          onCancel={hideEndDatePicker}
+        />
 
         {errorMessage ? (
           <TextInput style={styles.errorText}>{errorMessage}</TextInput>
@@ -188,5 +262,9 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     color: "rgba(0, 63, 92, 0.5)",
+  },
+  selectedDateText: {
+    fontSize: 16,
+    marginBottom: 10,
   },
 });
