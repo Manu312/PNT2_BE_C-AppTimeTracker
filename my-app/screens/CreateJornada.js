@@ -87,16 +87,17 @@ const CreateProject = ({navigation, route}) => {
     setErrorMessage(""); 
 
     try {
-      /*const data = await axios.post(
-        "http://192.168.100.56:8000/api/v1/auth/test",
+      const data = await axios.post(
+        "http://192.168.100.56:8000/api/jornadas/create",
         {
-          project_name: projectName,
-          price_per_hour: pricePerHour,
-          boca: "boca",
+          fechaInicio: selectedDate,
+          fechaCierre: selectedEndDate,
+          hoursWorked: hoursWorked,
+          price: price,
         }
       );
-      console.log(data.data);*/
-      navigation.navigate("ProjectScreen");
+      console.log(data.data);
+      navigation.replace("ProjectScreen");
     } catch (error) {
       console.error("Error sending data: ", error);
     }
