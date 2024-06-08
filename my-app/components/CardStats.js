@@ -2,12 +2,13 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "@rneui/themed";
 const CardStats = ({ price, name, navigation }) => {
+  //@TODO: hook navigation
   return (
     <TouchableOpacity
       onPress={() =>
         navigation.navigate("ProjectScreen", {
           name: name,
-          price: price,
+          pricePerHour: price,
         })
       }
     >

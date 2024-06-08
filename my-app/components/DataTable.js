@@ -1,17 +1,43 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Table, Row, Rows } from "react-native-table-component";
 
-const DataTable = ({ tableHead, tableData }) => {
+const DataTable = ({ tableHead, tableData, handleTableData }) => {
+  const handlePress = (id) => {
+    handleTableData(id);
+  };
+
   return (
+    // Add opening curly brace here
     <>
       <View>
         <Text>DataTable</Text>
       </View>
+      <Text>Presione un elemento para borrarlo</Text>
       <View style={styles.container}>
         <Table borderStyle={{ borderWidth: 2, borderColor: "red" }}>
           <Row data={tableHead} style={styles.head} textStyle={styles.text} />
-          <Rows data={tableData} textStyle={styles.text} />
+          {tableData.map((rowData, index) => {
+            return (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handlePress(rowData.id)}
+                key={rowData.id}
+              >
+                <Row
+                  key={index}
+                  data={[
+                    rowData.fechaInicio,
+                    rowData.fechaFinal,
+                    rowData.horasTrabajadas,
+                    rowData.totalACobrar,
+                  ]}
+                  style={styles.head}
+                  textStyle={styles.text}
+                />
+              </TouchableOpacity>
+            );
+          })}
         </Table>
       </View>
     </>
@@ -29,5 +55,5 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   head: { height: 40, backgroundColor: "#f1f8ff" },
-  text: { margin: 6, color: "blue" },
+  text: { margin: 6, color: "blue" }, // <-- Esto es un objeto
 });

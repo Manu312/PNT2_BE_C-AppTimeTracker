@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -11,32 +11,57 @@ import {
 import DataTable from "../components/DataTable";
 
 export default function ProjectScreen({ navigation, route }) {
-  const { name, price } = route.params;
-  const TABLE_HEAD = ["Head", "Head2", "Head3", "Head4"];
+  const { name, pricePerHour } = route.params;
+  const TABLE_HEAD = [
+    "Fecha Inicio",
+    "Fecha final",
+    "Horas trabajadas",
+    "Total a cobrar",
+  ];
 
-  const [tableData, setTableData] = useState([
-    ["1", "2", "3", "4"],
-    ["a", "b", "c", "d"],
-    ["1", "2", "3", "456\n789"],
-  ]);
+  const [tableData, setTableData] = useState([]);
+
+  const handleTableData = (id) => {
+    setTableData(tableData.filter((item) => item.id !== id));
+  };
+
+  //@TODO Hacer un useffect para traernos la data de las jornadas desde el back
+  useEffect(() => {
+    const mockData = [
+      {
+        id: "adadacsijacija",
+        fechaInicio: "2022-01-01",
+        fechaFinal: "2024-01-07",
+        horasTrabajadas: "40",
+        totalACobrar: "$500",
+      },
+      {
+        id: "4343adacsijacija",
+        fechaInicio: "2014-01-08",
+        fechaFinal: "2024-01-14",
+        horasTrabajadas: "38",
+        totalACobrar: "$475",
+      },
+      {
+        id: "adhaw22yfuuovcw",
+        fechaInicio: "2017-01-15",
+        fechaFinal: "2024-01-21",
+        horasTrabajadas: "42",
+        totalACobrar: "$525",
+      },
+    ];
+
+    setTableData(mockData);
+  }, []);
 
   return (
     <View style={styles.container}>
-      {/*       <Text style={styles.text}>Welcome to the Login Screen!</Text>
-       <Button
-         title="Go to Register"
-         onPress={() => {
-           navigation.navigate("RegisterScreen");
-         }}
-       />
-       <Button
-         title="Go to Home"
-         onPress={() => {
-           navigation.navigate("HomeScreen");
-         }}
-       /> */}
       <Text>PROYECTO: {name} </Text>
-      <DataTable tableHead={TABLE_HEAD} tableData={tableData} />
+      <DataTable
+        tableHead={TABLE_HEAD}
+        tableData={tableData}
+        handleTableData={handleTableData}
+      />
     </View>
   );
 }

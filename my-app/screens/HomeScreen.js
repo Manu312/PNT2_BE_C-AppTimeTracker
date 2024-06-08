@@ -17,6 +17,7 @@ export default function HomeScreen({ navigation }) {
       title: "Third Item",
     },
   ];
+
   return (
     <>
       <View style={styles.container}>
@@ -25,15 +26,19 @@ export default function HomeScreen({ navigation }) {
           <Text>Statsss</Text>
         </View>
         <View style={styles.containercard}>
-        {DATA.length === 0 ? (
+          {DATA.length === 0 ? (
             <Text>No tenes ningún proyecto</Text>
-          ) :(
-          <FlatList
-            data={DATA}
-            renderItem={({ item }) => (
-              <CardStats name={item.title} price={item.price} navigation={navigation}/>
-            )}
-          />
+          ) : (
+            <FlatList
+              data={DATA}
+              renderItem={({ item }) => (
+                <CardStats
+                  name={item.title}
+                  price={item.price}
+                  navigation={navigation}
+                />
+              )}
+            />
           )}
         </View>
       </View>
@@ -50,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: '#F8F8F8',
+    backgroundColor: "#F8F8F8",
   },
   text: {
     fontSize: 24,
