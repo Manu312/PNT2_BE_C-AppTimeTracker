@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -18,9 +18,7 @@ import axios from "axios";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from 'date-fns';
 
-const CreateProject = ({navigation}) => {
-  const [projectName, setProjectName] = useState("");
-  const [pricePerHour, setPricePerHour] = useState("");
+const CreateProject = ({navigation, route}) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -28,30 +26,25 @@ const CreateProject = ({navigation}) => {
   const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
   const [showEndDateTimePicker, setShowEndDateTimePicker] = useState(true);
- 
-  const projectNameOpacity = useSharedValue(projectName ? 0 : 1);
-  const pricePerHourOpacity = useSharedValue(projectName ? 0 : 1);
+  const [hoursWorked, setHoursWorked] = useState(0);
+  const [price, setPrice] = useState(0);
+  const { pricePerHour } = route.params;
 
-  const projectNamePlaceholderStyle = useAnimatedStyle(() => ({
-    opacity: projectNameOpacity.value,
-    position: "absolute",
-    top: 15,
-    left: 20,
-  }));
+  useEffect(() => {
+    if (selectedDate && selectedEndDate) {
+      const diffInMs = selectedEndDate.getTime() - selectedDate.getTime();
+      const diffInHours = diffInMs / (1000 * 60 * 60);
+      const roundedDiffInHours = Math.round(diffInHours * 10) / 10;
+      setHoursWorked(roundedDiffInHours);
+    }
+  }, [selectedDate, selectedEndDate]);
 
-  const pricePerHourPlaceholderStyle = useAnimatedStyle(() => ({
-    opacity: pricePerHourOpacity.value,
-    position: "absolute",
-    top: 15,
-    left: 20,
-  }));
-
-  const handleFocus = (opacity) => {
-    opacity.value = withTiming(0, {
-      duration: 300,
-      easing: Easing.inOut(Easing.ease),
-    });
-  };
+  useEffect(() => {
+    if (hoursWorked) {
+      const priceResult = hoursWorked * pricePerHour
+      setPrice(priceResult);
+    }
+  }, [hoursWorked]);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -81,27 +74,17 @@ const CreateProject = ({navigation}) => {
     setShowEndDateTimePicker(false);
   };
 
-  const handleBlur = (value, opacity) => {
-    if (value === "") {
-      opacity.value = withTiming(1, {
-        duration: 300,
-        easing: Easing.inOut(Easing.ease),
-      });
-    }
-  };
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
 
   const sendData = async () => {
-    if (projectName === "" || pricePerHour === "") {
-      setErrorMessage("No se olvide de llenar el formulario");
+    if (hoursWorked === 0 || price === 0) {
+      setErrorMessage("No se olvide de completar los campos");
       return;
     }
 
     setErrorMessage(""); 
-    console.log("Project name: ", projectName);
-    console.log("Price per hour: ", pricePerHour);
 
     try {
       /*const data = await axios.post(
@@ -113,7 +96,7 @@ const CreateProject = ({navigation}) => {
         }
       );
       console.log(data.data);*/
-      navigation.navigate("HomeScreen");
+      navigation.navigate("ProjectScreen");
     } catch (error) {
       console.error("Error sending data: ", error);
     }
@@ -123,52 +106,6 @@ const CreateProject = ({navigation}) => {
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
       <Text style={styles.logo}>Anotá tu jornada</Text>
-        <View style={styles.inputView}>
-          <Animated.Text
-            style={[styles.placeholder, projectNamePlaceholderStyle]}
-          >
-            Project name
-          </Animated.Text>
-          <TextInput
-            keyboardType="datetime" 
-            style={styles.inputText}
-            onChangeText={(text) => {
-              setProjectName(text);
-              if (text !== "") {
-                projectNameOpacity.value = withTiming(0, {
-                  duration: 300,
-                  easing: Easing.inOut(Easing.ease),
-                });
-              }
-            }}
-            value={projectName}
-            onFocus={() => handleFocus(projectNameOpacity)}
-            onBlur={() => handleBlur(projectName, projectNameOpacity)}
-          />
-        </View>
-        <View style={styles.inputView}>
-          <Animated.Text
-            style={[styles.placeholder, pricePerHourPlaceholderStyle]}
-          >
-            Precio por hora
-          </Animated.Text>
-          <TextInput
-            keyboardType="numeric"
-            style={styles.inputText}
-            onChangeText={(text) => {
-              setPricePerHour(text);
-              if (text !== "") {
-                pricePerHourOpacity.value = withTiming(0, {
-                  duration: 300,
-                  easing: Easing.inOut(Easing.ease),
-                });
-              }
-            }}
-            value={pricePerHour}
-            onFocus={() => handleFocus(pricePerHourOpacity)}
-            onBlur={() => handleBlur(pricePerHour, pricePerHourOpacity)}
-          />
-        </View>
         {showDateTimePicker && (
           <Button
             title="Seleccionar fecha de inicio"
@@ -206,6 +143,23 @@ const CreateProject = ({navigation}) => {
           onConfirm={handleEndConfirm}
           onCancel={hideEndDatePicker}
         />
+
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            editable={false}
+            placeholder="Horas Trabajadas"
+            value={hoursWorked > 0? hoursWorked.toString() : "Horas Trabajadas"}
+          />
+        </View>
+
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            editable={false}
+            value={price > 0? price.toString() : "Precio"}
+          />
+        </View>
 
         {errorMessage ? (
           <TextInput style={styles.errorText}>{errorMessage}</TextInput>
@@ -259,9 +213,6 @@ const styles = StyleSheet.create({
     color: "#003f5c",
     paddingLeft: 20,
     paddingRight: 20,
-  },
-  placeholder: {
-    color: "rgba(0, 63, 92, 0.5)",
   },
   selectedDateText: {
     fontSize: 16,

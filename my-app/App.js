@@ -55,7 +55,7 @@ function App() {
         <Stack.Screen
           name="ProjectScreen"
           component={ProjectScreen}
-          options={({ navigation }) => ({
+          options={({ navigation, route }) => ({
             headerLeft: null,
             headerShown: true,
             headerStyle: {
@@ -66,7 +66,10 @@ function App() {
             },
             headerRight: () => (
               <TouchableOpacity
-                onPress={() => navigation.navigate("CreateJornada")}
+                onPress={() => {
+                  const { pricePerHour } = route.params;
+                  navigation.navigate('CreateJornada', { navigation,pricePerHour }); 
+                }}
                 style={{ marginRight: 10 }}
               >
                 <Icon name="plus" size={24} />
