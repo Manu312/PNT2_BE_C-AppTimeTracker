@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 
 const CreateProject = ({navigation, route}) => {
   const [errorMessage, setErrorMessage] = useState("");
+  const [dateErrorMessage, setDateErrorMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [showDateTimePicker, setShowDateTimePicker] = useState(true);
@@ -69,9 +70,15 @@ const CreateProject = ({navigation, route}) => {
   };
 
   const handleEndConfirm = (date) => {
-    setSelectedEndDate(date);
-    hideEndDatePicker();
-    setShowEndDateTimePicker(false);
+    if (selectedDate && date < selectedDate) {
+      setDateErrorMessage("La fecha de cierre no puede ser anterior a la fecha de inicio. Por favor, seleccione una fecha de inicio válida.");
+      setShowDateTimePicker(true); 
+    } else {
+      setSelectedEndDate(date);
+      hideEndDatePicker();
+      setShowEndDateTimePicker(false);
+      setDateErrorMessage(""); 
+    }
   };
 
   const dismissKeyboard = () => {
@@ -161,6 +168,10 @@ const CreateProject = ({navigation, route}) => {
             value={price > 0? price.toString() : "Precio"}
           />
         </View>
+
+        {dateErrorMessage ? (
+          <Text style={styles.errorText}>{dateErrorMessage}</Text>
+        ) : null}
 
         {errorMessage ? (
           <TextInput style={styles.errorText}>{errorMessage}</TextInput>
