@@ -76,7 +76,7 @@ export default function RegisterScreen({ navigation }) {
           "Registro exitoso",
           "¡Bienvenido! Tu cuenta ha sido creada."
         );
-        await AsyncStorage.setItem("token", response.data.token);
+        await AsyncStorage.setItem("token", sendData.data.token);
         navigation.replace("HomeScreen");
       } else {
         Alert.alert(

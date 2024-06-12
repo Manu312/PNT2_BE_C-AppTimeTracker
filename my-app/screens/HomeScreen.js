@@ -1,29 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, FlatList, Button, Alert } from "react-native";
 import CardStats from "../components/CardStats";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 export default function HomeScreen() {
   const API_URL = process.env.API_URL;
+  const navigation = useNavigation();
   // const navigation = useNavigation();
   const [dataForTable, setDataForTable] = useState([]);
   const [textWelcome, setTextWelcome] = useState("Welcome to the Home Screen!");
-  /*   const DATA = [
-    {
-      price: 20000,
-      title: "First Item",
-    },
-    {
-      price: 110000,
-      title: "Second Item",
-    },
-    {
-      price: 44000,
-      title: "Third Item",
-    },
-  ]; */
+
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem("token");
@@ -47,9 +35,12 @@ export default function HomeScreen() {
       Alert.alert("Error", "Ha ocurrido un error, intentelo nuevamente.");
     }
   };
-  useEffect(() => {
-    getData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+      return () => {};
+    }, [])
+  );
 
   return (
     <>
@@ -60,7 +51,25 @@ export default function HomeScreen() {
         </View>
         <View style={styles.containercard}>
           {dataForTable.length === 0 ? (
-            <Text>No tenes ningún proyecto</Text>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: 90,
+              }}
+            >
+              <Text style={{ margin: 20, fontSize: 20 }}>
+                Todavia no tenes ningún proyecto
+              </Text>
+              <Button
+                title="Crear Proyecto"
+                onPress={() => {
+                  navigation.navigate("CreateProject");
+                }}
+              />
+            </View>
           ) : (
             <FlatList
               data={dataForTable}
@@ -68,6 +77,8 @@ export default function HomeScreen() {
               renderItem={({ item }) => (
                 <CardStats name={item.name} price={item.pricePerHour} />
               )}
+              style={styles.flatlist}
+              contentContainerStyle={styles.flatlistContent}
             />
           )}
         </View>
@@ -83,6 +94,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     alignItems: "center",
   },
+
   text: {
     fontSize: 24,
     fontWeight: "bold",
@@ -90,5 +102,15 @@ const styles = StyleSheet.create({
   containercard: {
     justifyContent: "center",
     alignContent: "center",
+    flex: 1,
+    width: "90%",
+  },
+  flatlist: {
+    flex: 1,
+    backgroundColor: "#f8f8f8",
+  },
+  flatlistContent: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
