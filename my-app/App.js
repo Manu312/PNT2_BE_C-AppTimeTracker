@@ -7,8 +7,8 @@ import RegisterScreen from "./screens/RegisterScreen";
 import CreateProject from "./screens/CreateProject";
 import ProjectScreen from "./screens/ProjectScreen";
 import CreateJornada from "./screens/CreateJornada";
-import { TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Stack = createStackNavigator();
 
@@ -32,10 +32,10 @@ function App() {
           options={({ navigation }) => ({
             headerShown: true,
             headerStyle: {
-              backgroundColor: '#F8F8F8',
+              backgroundColor: "#F8F8F8",
             },
             headerTitleStyle: {
-              color: '#fb5b5a',
+              color: "#fb5b5a",
             },
             headerRight: () => (
               <TouchableOpacity
@@ -59,16 +59,19 @@ function App() {
             headerLeft: null,
             headerShown: true,
             headerStyle: {
-              backgroundColor: '#F8F8F8',
+              backgroundColor: "#F8F8F8",
             },
             headerTitleStyle: {
-              color: '#fb5b5a',
+              color: "#fb5b5a",
             },
             headerRight: () => (
               <TouchableOpacity
                 onPress={() => {
                   const { pricePerHour } = route.params;
-                  navigation.navigate('CreateJornada', { navigation,pricePerHour }); 
+                  navigation.navigate("CreateJornada", {
+                    navigation,
+                    pricePerHour,
+                  });
                 }}
                 style={{ marginRight: 10 }}
               >

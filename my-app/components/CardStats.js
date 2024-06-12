@@ -1,8 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "@rneui/themed";
-const CardStats = ({ price, name, navigation }) => {
-  //@TODO: hook navigation
+import { useNavigation } from "@react-navigation/native";
+const CardStats = ({ price, name }) => {
+  const navigation = useNavigation();
   return (
     <TouchableOpacity
       onPress={() =>
@@ -28,23 +29,36 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     elevation: 3,
-    width: 150,
-    height: 150,
-    backgroundColor: "#f8f8f8",
-    borderColor: "#003f5c",
+    minWidth: 150,
+    minHeight: 150,
+    //backgroundColor: "#f8f8f8",
+    //backgroundColor: "#fb5b5a",
+    overflow: "break-word",
+    backgroundColor: "rgba(251,91,90,0.21)",
+    borderColor: "#fff",
+    // iOS shadow properties
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Android shadow
+    elevation: 5,
   },
   projectTitle: {
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: "bold",
     color: "#fb5b5a",
+    flexWrap: "wrap",
+    width: "90%",
   },
   cardContent: {
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   earningsText: {
     fontSize: 30,
     fontWeight: "bold",
-    marginVertical: 10,
   },
   hoursWorkedText: {
     fontSize: 16,

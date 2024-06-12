@@ -16,8 +16,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
+  const API_URL = process.env.API_URL;
+  const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const usernameOpacity = useSharedValue(username ? 0 : 1);
@@ -25,33 +29,32 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     try {
-      return navigation.replace("HomeScreen");
-
-      /*  const response = await fetch('http://localhost:8000/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'X-Powered-By': 'Express', 
-            'Content-Type': 'application/json; charset=utf-8',
-            'Content-Length': '298',
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        `${API_URL}/api/v1/auth/login`,
+        {
           username,
           password,
-        }),
-      });
-      console.log("response", response);
-      const result = await response.json();
+        },
+        {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
+      );
 
-      if (response.ok) {
-        await AsyncStorage.setItem('token', JSON.stringify(result.token));
-        navigation.replace('HomeScreen');
+      if (response.status === 200) {
+        await AsyncStorage.setItem("token", response.data.token);
+        navigation.navigate("HomeScreen");
       } else {
-        Alert.alert('Login Failed Password or username incorrect', result.error);
-      } */
+        Alert.alert("Usuario o contraseña incorrecta", response.error);
+      }
     } catch (error) {
-      Alert.alert("Error", "Something went wrong. Please try again.");
       console.error(error);
+      if (error.response && error.response.data) {
+        Alert.alert("Error", error.response.data.error);
+      } else {
+        Alert.alert("Error", "Ha ocurrido un error, intentelo nuevamente.");
+      }
     }
   };
 

@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Button,
+  Alert,
 } from "react-native";
 import Animated, {
   Easing,
@@ -15,8 +16,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
-const CreateProject = ({navigation}) => {
+const CreateProject = () => {
+  const API_URL = process.env.API_URL;
+  const navigation = useNavigation();
   const [projectName, setProjectName] = useState("");
   const [pricePerHour, setPricePerHour] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -63,11 +68,39 @@ const CreateProject = ({navigation}) => {
       return;
     }
 
-    setErrorMessage(""); 
     console.log("Project name: ", projectName);
     console.log("Price per hour: ", pricePerHour);
 
     try {
+      const value = await AsyncStorage.getItem("token");
+
+      if (value !== null) {
+        const data = await axios.post(
+          `${API_URL}/api/v1/project/create`,
+          {
+            project_name: projectName,
+            price_per_hour: pricePerHour,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: `Bearer ${value}`,
+            },
+          }
+        );
+        if (data.status === 201) {
+          console.log(data.data, "Proyecto creado con éxito");
+          Alert.alert(
+            "Proyecto creado",
+            "¡Tu proyecto ha sido creado con éxito!"
+          );
+
+          navigation.navigate("HomeScreen");
+        } else {
+          Alert.alert("Error", "Hubo un error al crear el proyecto");
+        }
+      }
+
       /*const data = await axios.post(
         "http://192.168.100.56:8000/api/v1/auth/test",
         {
@@ -77,16 +110,15 @@ const CreateProject = ({navigation}) => {
         }
       );
       console.log(data.data);*/
-      navigation.navigate("HomeScreen");
     } catch (error) {
       console.error("Error sending data: ", error);
     }
-  }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-      <Text style={styles.logo}>Crea tu proyecto</Text>
+        <Text style={styles.logo}>Crea tu proyecto</Text>
         <View style={styles.inputView}>
           <Animated.Text
             style={[styles.placeholder, projectNamePlaceholderStyle]}
@@ -137,7 +169,6 @@ const CreateProject = ({navigation}) => {
           <TextInput style={styles.errorText}>{errorMessage}</TextInput>
         ) : null}
 
-
         <Button
           title="Enviar"
           onPress={() => {
@@ -158,16 +189,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 30,
-    color: '#fb5b5a',
+    color: "#fb5b5a",
     marginBottom: 40,
   },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: '#F8F8F8',
+    backgroundColor: "#F8F8F8",
   },
   inputView: {
     width: "80%",

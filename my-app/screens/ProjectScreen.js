@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Button,
-} from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import DataTable from "../components/DataTable";
 
-export default function ProjectScreen({ navigation, route }) {
+export default function ProjectScreen({ route }) {
   const { name, pricePerHour } = route.params;
   const TABLE_HEAD = [
     "Fecha Inicio",
