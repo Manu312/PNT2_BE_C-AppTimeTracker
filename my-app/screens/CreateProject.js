@@ -68,9 +68,6 @@ const CreateProject = () => {
       return;
     }
 
-    console.log("Project name: ", projectName);
-    console.log("Price per hour: ", pricePerHour);
-
     try {
       const value = await AsyncStorage.getItem("token");
 
@@ -89,7 +86,6 @@ const CreateProject = () => {
           }
         );
         if (data.status === 201) {
-          console.log(data.data, "Proyecto creado con éxito");
           Alert.alert(
             "Proyecto creado",
             "¡Tu proyecto ha sido creado con éxito!"

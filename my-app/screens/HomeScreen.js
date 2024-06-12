@@ -75,7 +75,11 @@ export default function HomeScreen() {
               data={dataForTable}
               numColumns={2}
               renderItem={({ item }) => (
-                <CardStats name={item.name} price={item.pricePerHour} />
+                <CardStats
+                  name={item.name}
+                  price={item.pricePerHour}
+                  idProject={item.id}
+                />
               )}
               style={styles.flatlist}
               contentContainerStyle={styles.flatlistContent}

@@ -7,18 +7,18 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Button,
+  Alert,
 } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+
 import axios from "axios";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { format } from 'date-fns';
+import { format } from "date-fns";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CreateProject = ({navigation, route}) => {
+const CreateJornada = ({ route }) => {
+  const API_URL = process.env.API_URL;
+  const navigation = useNavigation();
   const [errorMessage, setErrorMessage] = useState("");
   const [dateErrorMessage, setDateErrorMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
@@ -29,7 +29,7 @@ const CreateProject = ({navigation, route}) => {
   const [showEndDateTimePicker, setShowEndDateTimePicker] = useState(true);
   const [hoursWorked, setHoursWorked] = useState(0);
   const [price, setPrice] = useState(0);
-  const { pricePerHour } = route.params;
+  const { pricePerHour, idProject, name } = route.params;
 
   useEffect(() => {
     if (selectedDate && selectedEndDate) {
@@ -42,7 +42,7 @@ const CreateProject = ({navigation, route}) => {
 
   useEffect(() => {
     if (hoursWorked) {
-      const priceResult = hoursWorked * pricePerHour
+      const priceResult = hoursWorked * pricePerHour;
       setPrice(priceResult);
     }
   }, [hoursWorked]);
@@ -64,20 +64,22 @@ const CreateProject = ({navigation, route}) => {
   const showEndDatePicker = () => {
     setEndDatePickerVisibility(true);
   };
-  
+
   const hideEndDatePicker = () => {
     setEndDatePickerVisibility(false);
   };
 
   const handleEndConfirm = (date) => {
     if (selectedDate && date < selectedDate) {
-      setDateErrorMessage("La fecha de cierre no puede ser anterior a la fecha de inicio. Por favor, seleccione una fecha de inicio válida.");
-      setShowDateTimePicker(true); 
+      setDateErrorMessage(
+        "La fecha de cierre no puede ser anterior a la fecha de inicio. Por favor, seleccione una fecha de inicio válida."
+      );
+      setShowDateTimePicker(true);
     } else {
       setSelectedEndDate(date);
       hideEndDatePicker();
       setShowEndDateTimePicker(false);
-      setDateErrorMessage(""); 
+      setDateErrorMessage("");
     }
   };
 
@@ -91,29 +93,49 @@ const CreateProject = ({navigation, route}) => {
       return;
     }
 
-    setErrorMessage(""); 
-
+    setErrorMessage("");
     try {
-      const data = await axios.post(
-        "http://192.168.100.56:8000/api/jornadas/create",
-        {
-          fechaInicio: selectedDate,
-          fechaCierre: selectedEndDate,
-          hoursWorked: hoursWorked,
-          price: price,
+      const value = await AsyncStorage.getItem("token");
+
+      if (value !== null) {
+        const data = await axios.post(
+          `${API_URL}/api/v1/jornada/create`,
+          {
+            fechaInicio: selectedDate,
+            fechaCierre: selectedEndDate,
+            hoursWorked: hoursWorked,
+            price: price,
+            idProject: idProject,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${value}`,
+            },
+          }
+        );
+
+        if (data.status === 201) {
+          Alert.alert("Jornada creada", "La jornada ha sido creada con éxito");
+          navigation.navigate("ProjectScreen", { name: data.data.username });
+        } else {
+          Alert.alert(
+            "Error",
+            "No se pudo crear la jornada. Por favor, intenta nuevamente."
+          );
         }
-      );
-      console.log(data.data);
-      navigation.replace("ProjectScreen");
+      } else {
+        navigation.replace("LoginScreen");
+      }
     } catch (error) {
       console.error("Error sending data: ", error);
     }
-  }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-      <Text style={styles.logo}>Anotá tu jornada</Text>
+        <Text>ID DEL PROYECTO: {idProject}</Text>
+        <Text style={styles.logo}>Anotá tu jornada</Text>
         {showDateTimePicker && (
           <Button
             title="Seleccionar fecha de inicio"
@@ -122,7 +144,8 @@ const CreateProject = ({navigation, route}) => {
         )}
         {!showDateTimePicker && (
           <Text style={styles.selectedDateText}>
-            Fecha inicio: {selectedDate ? format(selectedDate, 'dd/MM/yyyy HH:mm') : ""}
+            Fecha inicio:{" "}
+            {selectedDate ? format(selectedDate, "dd/MM/yyyy HH:mm") : ""}
           </Text>
         )}
         {showEndDateTimePicker && (
@@ -133,10 +156,10 @@ const CreateProject = ({navigation, route}) => {
         )}
         {!showEndDateTimePicker && (
           <Text style={styles.selectedDateText}>
-            Fecha cierre: {selectedEndDate ? format(selectedEndDate, 'dd/MM/yyyy HH:mm') : ""}
+            Fecha cierre:{" "}
+            {selectedEndDate ? format(selectedEndDate, "dd/MM/yyyy HH:mm") : ""}
           </Text>
         )}
-
 
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
@@ -157,7 +180,9 @@ const CreateProject = ({navigation, route}) => {
             style={styles.inputText}
             editable={false}
             placeholder="Horas Trabajadas"
-            value={hoursWorked > 0? hoursWorked.toString() : "Horas Trabajadas"}
+            value={
+              hoursWorked > 0 ? hoursWorked.toString() : "Horas Trabajadas"
+            }
           />
         </View>
 
@@ -165,7 +190,7 @@ const CreateProject = ({navigation, route}) => {
           <TextInput
             style={styles.inputText}
             editable={false}
-            value={price > 0? price.toString() : "Precio"}
+            value={price > 0 ? price.toString() : "Precio"}
           />
         </View>
 
@@ -176,7 +201,6 @@ const CreateProject = ({navigation, route}) => {
         {errorMessage ? (
           <TextInput style={styles.errorText}>{errorMessage}</TextInput>
         ) : null}
-
 
         <Button
           title="Enviar"
@@ -189,7 +213,7 @@ const CreateProject = ({navigation, route}) => {
   );
 };
 
-export default CreateProject;
+export default CreateJornada;
 
 const styles = StyleSheet.create({
   errorText: {
@@ -198,16 +222,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 30,
-    color: '#fb5b5a',
+    color: "#fb5b5a",
     marginBottom: 40,
   },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: '#F8F8F8',
+    backgroundColor: "#F8F8F8",
   },
   inputView: {
     width: "80%",

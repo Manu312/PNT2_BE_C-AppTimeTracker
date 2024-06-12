@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import DataTable from "../components/DataTable";
+import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProjectScreen({ route }) {
-  const { name, pricePerHour } = route.params;
+  const API_URL = process.env.API_URL;
+  //@TODO AUGUSTO: VER DE USAR CONTEXT O REDUX PARA ESTO. SE ROMPE CUANDO VENIS DESDE CREATEJORNADA PORQUE NO SE ESTAN PASANDO POR PARAMETROS ESAS TRES COSAS.
+  const { name, pricePerHour, idProject } = route.params;
+
   const TABLE_HEAD = [
     "Fecha Inicio",
     "Fecha final",
@@ -17,38 +23,43 @@ export default function ProjectScreen({ route }) {
     setTableData(tableData.filter((item) => item.id !== id));
   };
 
-  //@TODO Hacer un useffect para traernos la data de las jornadas desde el back
-  useEffect(() => {
-    const mockData = [
-      {
-        id: "adadacsijacija",
-        fechaInicio: "2022-01-01",
-        fechaFinal: "2024-01-07",
-        horasTrabajadas: "40",
-        totalACobrar: "$500",
-      },
-      {
-        id: "4343adacsijacija",
-        fechaInicio: "2014-01-08",
-        fechaFinal: "2024-01-14",
-        horasTrabajadas: "38",
-        totalACobrar: "$475",
-      },
-      {
-        id: "adhaw22yfuuovcw",
-        fechaInicio: "2017-01-15",
-        fechaFinal: "2024-01-21",
-        horasTrabajadas: "42",
-        totalACobrar: "$525",
-      },
-    ];
+  const getData = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (token !== null) {
+        console.log(`${API_URL}/api/v1/jornada/${idProject}/jornadas`, "URL");
+        console.log(typeof idProject, "TYPEOF ID PROJECT");
+        const data = await axios.get(
+          `${API_URL}/api/v1/jornada/${idProject}/jornadas`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-    setTableData(mockData);
-  }, []);
+        if (data.status === 201) {
+          setTableData(data.data.jornadas);
+        }
+      }
+    } catch (error) {
+      console.log(error.message, "Error en getData de ProjectScreen");
+      console.log(error, "Error en getData de ProjectScreen");
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+      return () => {};
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
       <Text>PROYECTO: {name} </Text>
+      <Text>Precio por hora: {pricePerHour}</Text>
+      <Text>Id del proyecto: {idProject}</Text>
       <DataTable
         tableHead={TABLE_HEAD}
         tableData={tableData}

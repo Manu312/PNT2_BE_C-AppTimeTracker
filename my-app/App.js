@@ -67,10 +67,11 @@ function App() {
             headerRight: () => (
               <TouchableOpacity
                 onPress={() => {
-                  const { pricePerHour } = route.params;
+                  const { pricePerHour, name, idProject } = route.params;
                   navigation.navigate("CreateJornada", {
-                    navigation,
                     pricePerHour,
+                    name,
+                    idProject,
                   });
                 }}
                 style={{ marginRight: 10 }}

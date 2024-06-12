@@ -28,9 +28,9 @@ const DataTable = ({ tableHead, tableData, handleTableData }) => {
                   key={index}
                   data={[
                     rowData.fechaInicio,
-                    rowData.fechaFinal,
-                    rowData.horasTrabajadas,
-                    rowData.totalACobrar,
+                    rowData.fechaCierre,
+                    rowData.hoursWorked,
+                    rowData.price,
                   ]}
                   style={styles.head}
                   textStyle={styles.text}

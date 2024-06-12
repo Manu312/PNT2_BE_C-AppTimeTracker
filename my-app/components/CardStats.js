@@ -2,14 +2,16 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
-const CardStats = ({ price, name }) => {
+const CardStats = ({ price, name, idProject }) => {
   const navigation = useNavigation();
+
   return (
     <TouchableOpacity
       onPress={() =>
         navigation.navigate("ProjectScreen", {
           name: name,
           pricePerHour: price,
+          idProject: idProject,
         })
       }
     >
