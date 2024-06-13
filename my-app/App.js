@@ -9,85 +9,83 @@ import ProjectScreen from "./screens/ProjectScreen";
 import CreateJornada from "./screens/CreateJornada";
 import { TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { ProjectContextProvider } from "./contexts/ProjectContext";
 
 const Stack = createStackNavigator();
 
 function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen">
-        <Stack.Screen
-          name="LoginScreen"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="RegisterScreen"
-          component={RegisterScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="HomeScreen"
-          component={HomeScreen}
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: "#F8F8F8",
-            },
-            headerTitleStyle: {
-              color: "#fb5b5a",
-            },
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate("CreateProject")}
-                style={{ marginRight: 10 }}
-              >
-                <Icon name="plus" size={24} />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="CreateProject"
-          component={CreateProject}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ProjectScreen"
-          component={ProjectScreen}
-          options={({ navigation, route }) => ({
-            headerLeft: null,
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: "#F8F8F8",
-            },
-            headerTitleStyle: {
-              color: "#fb5b5a",
-            },
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  const { pricePerHour, name, idProject } = route.params;
-                  navigation.navigate("CreateJornada", {
-                    pricePerHour,
-                    name,
-                    idProject,
-                  });
-                }}
-                style={{ marginRight: 10 }}
-              >
-                <Icon name="plus" size={24} />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="CreateJornada"
-          component={CreateJornada}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ProjectContextProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="LoginScreen">
+          <Stack.Screen
+            name="LoginScreen"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="RegisterScreen"
+            component={RegisterScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="HomeScreen"
+            component={HomeScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: "#F8F8F8",
+              },
+              headerTitleStyle: {
+                color: "#fb5b5a",
+              },
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("CreateProject")}
+                  style={{ marginRight: 10 }}
+                >
+                  <Icon name="plus" size={24} />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="CreateProject"
+            component={CreateProject}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ProjectScreen"
+            component={ProjectScreen}
+            options={({ navigation, route }) => ({
+              headerLeft: null,
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: "#F8F8F8",
+              },
+              headerTitleStyle: {
+                color: "#fb5b5a",
+              },
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("CreateJornada");
+                  }}
+                  style={{ marginRight: 10 }}
+                >
+                  <Icon name="plus" size={24} />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="CreateJornada"
+            component={CreateJornada}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ProjectContextProvider>
   );
 }
 

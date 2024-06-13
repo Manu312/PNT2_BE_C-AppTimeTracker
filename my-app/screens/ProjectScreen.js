@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import DataTable from "../components/DataTable";
 import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ProjectContext } from "../contexts/ProjectContext";
 
 export default function ProjectScreen({ route }) {
   const API_URL = process.env.API_URL;
-  //@TODO AUGUSTO: VER DE USAR CONTEXT O REDUX PARA ESTO. SE ROMPE CUANDO VENIS DESDE CREATEJORNADA PORQUE NO SE ESTAN PASANDO POR PARAMETROS ESAS TRES COSAS.
-  const { name, pricePerHour, idProject } = route.params;
 
+  const { state } = useContext(ProjectContext);
+  const { name, pricePerHour, idProject } = state.project;
   const TABLE_HEAD = [
     "Fecha Inicio",
     "Fecha final",
@@ -27,8 +28,6 @@ export default function ProjectScreen({ route }) {
     try {
       const token = await AsyncStorage.getItem("token");
       if (token !== null) {
-        console.log(`${API_URL}/api/v1/jornada/${idProject}/jornadas`, "URL");
-        console.log(typeof idProject, "TYPEOF ID PROJECT");
         const data = await axios.get(
           `${API_URL}/api/v1/jornada/${idProject}/jornadas`,
           {

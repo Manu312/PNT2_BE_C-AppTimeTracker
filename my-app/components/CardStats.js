@@ -1,19 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import { ProjectContext } from "../contexts/ProjectContext";
 const CardStats = ({ price, name, idProject }) => {
   const navigation = useNavigation();
+  const project = useContext(ProjectContext);
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("ProjectScreen", {
-          name: name,
-          pricePerHour: price,
-          idProject: idProject,
-        })
-      }
+      onPress={() => {
+        project.dispatch({
+          type: "SET_PROJECT",
+          project: {
+            name: name,
+            pricePerHour: price,
+            idProject: idProject,
+          },
+        });
+        navigation.navigate("ProjectScreen");
+      }}
     >
       <Card containerStyle={styles.cardContainer}>
         <Card.Title style={styles.projectTitle}>{name}</Card.Title>
@@ -33,12 +39,10 @@ const styles = StyleSheet.create({
     elevation: 3,
     minWidth: 150,
     minHeight: 150,
-    //backgroundColor: "#f8f8f8",
-    //backgroundColor: "#fb5b5a",
+
     overflow: "break-word",
     backgroundColor: "rgba(251,91,90,0.21)",
     borderColor: "#fff",
-    // iOS shadow properties
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,

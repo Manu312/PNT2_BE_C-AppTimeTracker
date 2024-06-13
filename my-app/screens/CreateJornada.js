@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -15,6 +15,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from "date-fns";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ProjectContext } from "../contexts/ProjectContext";
 
 const CreateJornada = ({ route }) => {
   const API_URL = process.env.API_URL;
@@ -29,7 +30,8 @@ const CreateJornada = ({ route }) => {
   const [showEndDateTimePicker, setShowEndDateTimePicker] = useState(true);
   const [hoursWorked, setHoursWorked] = useState(0);
   const [price, setPrice] = useState(0);
-  const { pricePerHour, idProject, name } = route.params;
+  const { state } = useContext(ProjectContext);
+  const { name, pricePerHour, idProject } = state.project;
 
   useEffect(() => {
     if (selectedDate && selectedEndDate) {
@@ -116,18 +118,17 @@ const CreateJornada = ({ route }) => {
 
         if (data.status === 201) {
           Alert.alert("Jornada creada", "La jornada ha sido creada con éxito");
-          navigation.navigate("ProjectScreen", { name: data.data.username });
-        } else {
-          Alert.alert(
-            "Error",
-            "No se pudo crear la jornada. Por favor, intenta nuevamente."
-          );
+          navigation.navigate("ProjectScreen");
         }
       } else {
         navigation.replace("LoginScreen");
       }
     } catch (error) {
       console.error("Error sending data: ", error);
+      Alert.alert(
+        "Error",
+        "No se pudo crear la jornada. Por favor, intenta nuevamente."
+      );
     }
   };
 
