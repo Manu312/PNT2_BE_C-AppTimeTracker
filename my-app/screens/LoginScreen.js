@@ -8,6 +8,7 @@ import {
   Alert,
   Keyboard,
   TouchableWithoutFeedback,
+  Button,
 } from "react-native";
 import Animated, {
   Easing,
@@ -58,6 +59,15 @@ export default function LoginScreen() {
     }
   };
 
+  const llamaTest = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/v1/test`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const handleFocus = (opacity) => {
     opacity.value = withTiming(0, {
       duration: 300,
@@ -96,6 +106,7 @@ export default function LoginScreen() {
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
         <Text style={styles.logo}>MyTime Tracker</Text>
+        <Button title="Go to Register" onPress={() => llamaTest()} />
         <View style={styles.inputView}>
           <Animated.Text style={[styles.placeholder, usernamePlaceholderStyle]}>
             Username
