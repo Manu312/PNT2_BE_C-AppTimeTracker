@@ -11,13 +11,11 @@ const initialState = {
 const projectReducer = (state = initialState, payload) => {
   switch (payload.type) {
     case "SET_PROJECT":
-      console.log("ENTRÓ A SET_PROJECT DEL REDUCER", payload.project);
       return {
         ...state,
         project: payload.project,
       };
     case "GET_PROJECT":
-      console.log("ENTRÓ A GET_PROJECT DEL REDUCER", state.project);
       return state.project;
 
     default:

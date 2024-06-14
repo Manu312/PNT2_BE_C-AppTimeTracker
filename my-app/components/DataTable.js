@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { Table, Row, Rows } from "react-native-table-component";
+import { Table, Row } from "react-native-table-component";
 
 const DataTable = ({ tableHead, tableData, handleTableData }) => {
   const handlePress = (id) => {

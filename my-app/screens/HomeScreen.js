@@ -8,7 +8,6 @@ import axios from "axios";
 export default function HomeScreen() {
   const API_URL = process.env.API_URL;
   const navigation = useNavigation();
-  // const navigation = useNavigation();
   const [dataForTable, setDataForTable] = useState([]);
   const [textWelcome, setTextWelcome] = useState("Welcome to the Home Screen!");
 
@@ -31,7 +30,6 @@ export default function HomeScreen() {
         throw new Error("Ha ocurrido un error");
       }
     } catch (e) {
-      console.log(e, "Error en getData de Home Screen");
       Alert.alert("Error", "Ha ocurrido un error, intentelo nuevamente.");
     }
   };
