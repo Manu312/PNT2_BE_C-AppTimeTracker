@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, StyleSheet, FlatList, Button, Alert } from "react-native";
 import CardStats from "../components/CardStats";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import AuthContext, { defaultAuthData } from '../services/AuthContext';
 
 export default function HomeScreen() {
   const API_URL = process.env.API_URL;
   const navigation = useNavigation();
   const [dataForTable, setDataForTable] = useState([]);
   const [textWelcome, setTextWelcome] = useState("Welcome to the Home Screen!");
+  const { setAuthData } = useContext(AuthContext)
 
   const getData = async () => {
     try {
@@ -40,10 +42,20 @@ export default function HomeScreen() {
     }, [])
   );
 
+  const logOut = async () => {
+    setAuthData(defaultAuthData)
+  };
+
   return (
     <>
       <View style={styles.container}>
         <Text style={styles.text}>{textWelcome}</Text>
+        <Button
+                title="Cerrar sesion"
+                onPress={() => {
+                  logOut();
+                }}
+        />
         <View>
           <Text>Statsss</Text>
         </View>

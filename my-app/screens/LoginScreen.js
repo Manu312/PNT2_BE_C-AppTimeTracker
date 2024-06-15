@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import Animated, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import AuthContext from '../services/AuthContext';
 
 export default function LoginScreen() {
   const API_URL = process.env.API_URL;
@@ -27,6 +28,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const usernameOpacity = useSharedValue(username ? 0 : 1);
   const passwordOpacity = useSharedValue(password ? 0 : 1);
+  const { setAuthData } = useContext(AuthContext)
 
   const handleLogin = async () => {
     try {
@@ -44,8 +46,12 @@ export default function LoginScreen() {
       );
 
       if (response.status === 200) {
+        console.log(response.data);
+        setAuthData({
+          token: response.data.token, 
+          data: response.data.user
+        });
         await AsyncStorage.setItem("token", response.data.token);
-        navigation.navigate("HomeScreen");
       } else {
         Alert.alert("Usuario o contraseña incorrecta", response.error);
       }
