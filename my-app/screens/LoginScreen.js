@@ -61,7 +61,7 @@ export default function LoginScreen() {
 
   const llamaTest = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/v1/test`);
+      const response = await axios.get(`${API_URL}/test`);
       console.log(response.data);
     } catch (error) {
       console.error(error);
