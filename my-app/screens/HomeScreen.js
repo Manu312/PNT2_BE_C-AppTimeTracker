@@ -17,6 +17,7 @@ export default function HomeScreen() {
       if (value !== null) {
         const data = await axios.get(`${API_URL}/api/v1/project/all`, {
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${value}`,
           },
         });

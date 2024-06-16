@@ -66,7 +66,7 @@ export default function RegisterScreen({ navigation }) {
         },
         {
           headers: {
-            "Content-Type": "application/json; charset=utf-8",
+            "Content-Type": "application/json",
           },
         }
       );

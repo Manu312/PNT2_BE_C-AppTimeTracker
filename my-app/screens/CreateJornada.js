@@ -111,6 +111,7 @@ const CreateJornada = ({ route }) => {
           },
           {
             headers: {
+              "Content-Type": "application/json",
               Authorization: `Bearer ${value}`,
             },
           }

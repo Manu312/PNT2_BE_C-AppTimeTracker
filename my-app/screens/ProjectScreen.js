@@ -32,6 +32,7 @@ export default function ProjectScreen({ route }) {
           `${API_URL}/api/v1/jornada/${idProject}/jornadas`,
           {
             headers: {
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           }
