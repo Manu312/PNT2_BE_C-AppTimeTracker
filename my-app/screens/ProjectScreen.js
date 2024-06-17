@@ -57,9 +57,12 @@ export default function ProjectScreen({ route }) {
 
   return (
     <View style={styles.container}>
-      <Text>PROYECTO: {name} </Text>
-      <Text>Precio por hora: {pricePerHour}</Text>
-      <Text>Id del proyecto: {idProject}</Text>
+      <View style={styles.header}>
+      <Text style={styles.headerText}>PROYECTO: {name} </Text>
+      <Text style={styles.subHeaderText}>Precio por hora: {pricePerHour}</Text>
+      <Text style={styles.subHeaderText}>Id del proyecto: {idProject}</Text>
+      <Text style={styles.instructionText}>Presione un elemento para borrarlo</Text>
+      </View>
       <DataTable
         tableHead={TABLE_HEAD}
         tableData={tableData}
@@ -79,4 +82,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  header: {
+    padding: 16,
+    backgroundColor: "#f1f8ff",
+    alignItems: "center",
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  subHeaderText: {
+    fontSize: 14,
+    color: "#666",
+  },
+  instructionText: {
+    padding: 16,
+    fontSize: 14,
+    textAlign: "center",
+    color: "#666",
+  }
 });
