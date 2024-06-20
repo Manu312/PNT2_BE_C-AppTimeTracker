@@ -5,6 +5,7 @@ import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProjectContext } from "../contexts/ProjectContext";
+import { format } from "date-fns";
 
 export default function ProjectScreen({ route }) {
   const API_URL = process.env.API_URL;
@@ -39,7 +40,12 @@ export default function ProjectScreen({ route }) {
         );
 
         if (data.status === 201) {
-          setTableData(data.data.jornadas);
+          const formattedData = data.data.jornadas.map((jornada) => ({
+            ...jornada,
+            fechaInicio: format(new Date(jornada.fechaInicio), "dd/MM/yyyy HH:mm"),
+            fechaCierre: format(new Date(jornada.fechaCierre), "dd/MM/yyyy HH:mm"),
+          }));
+          setTableData(formattedData);
         }
       }
     } catch (error) {
