@@ -79,11 +79,11 @@ export default function RegisterScreen({ navigation }) {
           "¡Bienvenido! Tu cuenta ha sido creada."
         );
         console.log(sendData.data);
-        setAuthData({
+        const authData = {
           token: sendData.data.token, 
           data: sendData.data.user
-        });
-        await AsyncStorage.setItem("token", sendData.data.token);
+        }
+        setAuthData(authData);
       } else {
         Alert.alert(
           "Error",

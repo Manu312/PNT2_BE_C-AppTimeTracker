@@ -67,47 +67,41 @@ const CreateProject = () => {
       setErrorMessage("No se olvide de llenar el formulario");
       return;
     }
-
     try {
-      const value = await AsyncStorage.getItem("token");
-
-      if (value !== null) {
-        const data = await axios.post(
-          `${API_URL}/api/v1/project/create`,
-          {
-            project_name: projectName,
-            price_per_hour: pricePerHour,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: `Bearer ${value}`,
+      const authDataString = await AsyncStorage.getItem("authData");
+      if (authDataString !== null) {
+        const authData = JSON.parse(authDataString);
+        const token = authData.token;
+        if (token) {
+          const data = await axios.post(
+            `${API_URL}/api/v1/project/create`,
+            {
+              project_name: projectName,
+              price_per_hour: pricePerHour,
             },
-          }
-        );
-        if (data.status === 201) {
-          Alert.alert(
-            "Proyecto creado",
-            "¡Tu proyecto ha sido creado con éxito!"
+            {
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
-
-          navigation.navigate("HomeScreen");
-        } else {
-          Alert.alert("Error", "Hubo un error al crear el proyecto");
+          if (data.status === 201) {
+            Alert.alert(
+              "Proyecto creado",
+              "¡Tu proyecto ha sido creado con éxito!"
+            );
+    
+            navigation.navigate("HomeScreen");
+          } else {
+            Alert.alert("Error", "Hubo un error al crear el proyecto");
+          }
         }
       }
-
-      /*const data = await axios.post(
-        "http://192.168.100.56:8000/api/v1/auth/test",
-        {
-          project_name: projectName,
-          price_per_hour: pricePerHour,
-          boca: "boca",
-        }
-      );
-      console.log(data.data);*/
     } catch (error) {
-      console.error("Error sending data: ", error);
+      // Asegúrate de manejar el error adecuadamente
+      console.log(error.message, "Error al crear el proyecto");
+      Alert.alert("Error", "Hubo un problema al crear el proyecto");
     }
   };
 

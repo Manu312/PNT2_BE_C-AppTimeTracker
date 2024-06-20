@@ -11,16 +11,16 @@ import { TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { ProjectContextProvider } from "./contexts/ProjectContext";
 import AuthContextGlobal, { defaultAuthData } from './services/AuthContext';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "./services/AsyncStorage";
 
 function App() {
   const Stack = createStackNavigator();
   const [authData, setAuthData] = useState(defaultAuthData)
 
   useEffect(() => {
-    AsyncStorage.getItem('authData').then((authData) => {
+    console.log("Recolectando data");
+    AsyncStorage.getData('authData').then((authData) => {
       if (authData) {
-        console.log(authData)
         setAuthData(authData)
       }
     })
@@ -29,9 +29,9 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       if(authData){
-        AsyncStorage.setItem('authData', authData)
+        AsyncStorage.storeData('authData', authData)
       }else{
-        AsyncStorage.clear()
+        AsyncStorage.clearAll()
       }
     })
   }, [authData])
@@ -72,7 +72,7 @@ function App() {
               <Stack.Screen
                 name="ProjectScreen"
                 component={ProjectScreen}
-                options={({ navigation, route }) => ({
+                options={({ navigation }) => ({
                   headerLeft: null,
                   headerShown: true,
                   headerStyle: {

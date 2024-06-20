@@ -11,15 +11,15 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const [dataForTable, setDataForTable] = useState([]);
   const [textWelcome, setTextWelcome] = useState("Welcome to the Home Screen!");
-  const { setAuthData } = useContext(AuthContext)
+  const { authData, setAuthData } = useContext(AuthContext)
 
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem("token");
-      if (value !== null) {
+      const token = authData.token;
+      if (token) {
         const data = await axios.get(`${API_URL}/api/v1/project/all`, {
           headers: {
-            Authorization: `Bearer ${value}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (data.status === 201) {

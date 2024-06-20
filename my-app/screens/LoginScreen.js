@@ -47,11 +47,11 @@ export default function LoginScreen() {
 
       if (response.status === 200) {
         console.log(response.data);
-        setAuthData({
+        const authData = {
           token: response.data.token, 
           data: response.data.user
-        });
-        await AsyncStorage.setItem("token", response.data.token);
+        }
+        setAuthData(authData);
       } else {
         Alert.alert("Usuario o contraseña incorrecta", response.error);
       }
