@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from "date-fns";
+//import {  parse } from "date-fns";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProjectContext } from "../contexts/ProjectContext";
@@ -32,6 +33,11 @@ const CreateJornada = ({ route }) => {
   const [price, setPrice] = useState(0);
   const { state } = useContext(ProjectContext);
   const { name, pricePerHour, idProject } = state.project;
+
+  /*const defaultStartDate = parse("27/06/2024 17:00", "dd/MM/yyyy HH:mm", new Date());
+  const defaultEndDate = parse("27/06/2024 20:00", "dd/MM/yyyy HH:mm", new Date());
+  const [selectedDate, setSelectedDate] = useState(defaultStartDate);
+  const [selectedEndDate, setSelectedEndDate] = useState(defaultEndDate);*/
 
   useEffect(() => {
     if (selectedDate && selectedEndDate) {
