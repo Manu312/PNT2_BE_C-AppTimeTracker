@@ -20,7 +20,7 @@ export default function ProjectScreen({ route }) {
   ];
 
   const [tableData, setTableData] = useState([]);
-  const [authData] = useState(AuthContext)
+  const {authData} = useContext(AuthContext)
 
   const handleTableData = (id) => {
     setTableData(tableData.filter((item) => item.id !== id));

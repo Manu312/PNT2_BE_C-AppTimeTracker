@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProjectContext } from "../contexts/ProjectContext";
+import  AuthContext  from '../services/AuthContext';
 
 const CreateJornada = ({ route }) => {
   const API_URL = process.env.API_URL;
@@ -32,6 +33,7 @@ const CreateJornada = ({ route }) => {
   const [price, setPrice] = useState(0);
   const { state } = useContext(ProjectContext);
   const { name, pricePerHour, idProject } = state.project;
+  const {authData} = useContext(AuthContext)
 
   useEffect(() => {
     if (selectedDate && selectedEndDate) {
@@ -97,9 +99,9 @@ const CreateJornada = ({ route }) => {
 
     setErrorMessage("");
     try {
-      const value = await AsyncStorage.getItem("token");
+      const token = authData.token;
 
-      if (value !== null) {
+      if (token !== null) {
         const data = await axios.post(
           `${API_URL}/api/v1/jornada/create`,
           {
@@ -111,7 +113,7 @@ const CreateJornada = ({ route }) => {
           },
           {
             headers: {
-              Authorization: `Bearer ${value}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
