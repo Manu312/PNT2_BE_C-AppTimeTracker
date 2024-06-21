@@ -20,10 +20,22 @@ export default function ProjectScreen({ route }) {
   ];
 
   const [tableData, setTableData] = useState([]);
+  const [totalHoras, setTotalHoras] = useState(0);
+  const [totalCobrar, setTotalCobrar] = useState(0);
 
   const handleTableData = (id) => {
     setTableData(tableData.filter((item) => item.id !== id));
   };
+
+  const sumarTotalHoras = (data) => {
+    const horasSuma = data.reduce((acc, item) => acc + item.hoursWorked, 0);
+    setTotalHoras(horasSuma);
+  }
+
+  const sumarTotalCobrar = (data) => {
+    const cobrarSuma = data.reduce((acc, item) => acc + item.price, 0);
+    setTotalCobrar(cobrarSuma);
+  }
 
   const getData = async () => {
     try {
@@ -45,6 +57,8 @@ export default function ProjectScreen({ route }) {
             fechaInicio: format(new Date(jornada.fechaInicio), "dd/MM/yyyy HH:mm"),
             fechaCierre: format(new Date(jornada.fechaCierre), "dd/MM/yyyy HH:mm"),
           }));
+          sumarTotalHoras(formattedData);
+          sumarTotalCobrar(formattedData)
           setTableData(formattedData);
         }
       }
@@ -66,6 +80,8 @@ export default function ProjectScreen({ route }) {
       <View style={styles.header}>
       <Text style={styles.headerText}>PROYECTO: {name} </Text>
       <Text style={styles.subHeaderText}>Precio por hora: {pricePerHour}</Text>
+      <Text style={styles.subHeaderText}>Horas totales hechas: {totalHoras}</Text>
+      <Text style={styles.subHeaderText}>Total a cobrar: {totalCobrar}</Text>
       <Text style={styles.subHeaderText}>Id del proyecto: {idProject}</Text>
       <Text style={styles.instructionText}>Presione un elemento para borrarlo</Text>
       </View>
