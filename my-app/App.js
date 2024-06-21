@@ -12,6 +12,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { ProjectContextProvider } from "./contexts/ProjectContext";
 import AuthContextGlobal, { defaultAuthData } from './services/AuthContext';
 import AsyncStorage from "./services/AsyncStorage";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 function App() {
   const Stack = createStackNavigator();
@@ -36,6 +37,10 @@ function App() {
     })
   }, [authData])
 
+  const logOut = async () => {
+    setAuthData(defaultAuthData)
+  };
+
   return (
     <AuthContextGlobal.Provider value={{ authData, setAuthData }}>
       {
@@ -54,6 +59,7 @@ function App() {
                   headerTitleStyle: {
                     color: "#fb5b5a",
                   },
+                  headerTitleAlign: 'center',
                   headerRight: () => (
                     <TouchableOpacity
                       onPress={() => navigation.navigate("CreateProject")}
@@ -62,19 +68,32 @@ function App() {
                       <Icon name="plus" size={24} />
                     </TouchableOpacity>
                   ),
+                  headerLeft: () => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        logOut();
+                      }}
+                      style={{ marginLeft: 10 }}
+                    >
+                      <MaterialIcons name="exit-to-app" size={24} />
+                    </TouchableOpacity>
+                  ),
                 })}
               />
               <Stack.Screen
                 name="CreateProject"
                 component={CreateProject}
-                options={{ headerShown: false }}
+                options={{ headerShown: true,
+                  headerTitle: '', 
+                  headerTintColor: '#000',
+                }}
               />
               <Stack.Screen
                 name="ProjectScreen"
                 component={ProjectScreen}
                 options={({ navigation }) => ({
-                  headerLeft: null,
                   headerShown: true,
+                  headerTintColor: '#000',
                   headerStyle: {
                     backgroundColor: "#F8F8F8",
                   },
@@ -96,7 +115,10 @@ function App() {
               <Stack.Screen
                 name="CreateJornada"
                 component={CreateJornada}
-                options={{ headerShown: false }}
+                options={{ headerShown: true,
+                  headerTitle: '', 
+                  headerTintColor: '#000'
+                }}
               />
             </Stack.Navigator>
           </NavigationContainer>

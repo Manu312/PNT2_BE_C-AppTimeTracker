@@ -4,7 +4,7 @@ import CardStats from "../components/CardStats";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import AuthContext, { defaultAuthData } from '../services/AuthContext';
+import AuthContext from '../services/AuthContext';
 
 export default function HomeScreen() {
   const API_URL = process.env.API_URL;
@@ -42,20 +42,10 @@ export default function HomeScreen() {
     }, [])
   );
 
-  const logOut = async () => {
-    setAuthData(defaultAuthData)
-  };
-
   return (
     <>
       <View style={styles.container}>
         <Text style={styles.text}>{textWelcome}</Text>
-        <Button
-                title="Cerrar sesion"
-                onPress={() => {
-                  logOut();
-                }}
-        />
         <View>
           <Text>Statsss</Text>
         </View>
