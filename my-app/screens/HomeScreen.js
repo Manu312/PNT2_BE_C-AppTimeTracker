@@ -20,6 +20,7 @@ export default function HomeScreen() {
         const data = await axios.get(`${API_URL}/api/v1/project/all`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
         if (data.status === 201) {

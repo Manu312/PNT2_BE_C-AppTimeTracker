@@ -6,6 +6,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProjectContext } from "../contexts/ProjectContext";
 import  AuthContext  from '../services/AuthContext';
+import { format } from "date-fns";
 
 export default function ProjectScreen({ route }) {
   const API_URL = process.env.API_URL;
@@ -22,9 +23,22 @@ export default function ProjectScreen({ route }) {
   const [tableData, setTableData] = useState([]);
   const {authData} = useContext(AuthContext)
 
+  const [totalHoras, setTotalHoras] = useState(0);
+  const [totalCobrar, setTotalCobrar] = useState(0);
+
   const handleTableData = (id) => {
     setTableData(tableData.filter((item) => item.id !== id));
   };
+
+  const sumarTotalHoras = (data) => {
+    const horasSuma = data.reduce((acc, item) => acc + item.hoursWorked, 0);
+    setTotalHoras(horasSuma);
+  }
+
+  const sumarTotalCobrar = (data) => {
+    const cobrarSuma = data.reduce((acc, item) => acc + item.price, 0);
+    setTotalCobrar(cobrarSuma);
+  }
 
   const getData = async () => {
     try {
@@ -34,13 +48,21 @@ export default function ProjectScreen({ route }) {
           `${API_URL}/api/v1/jornada/${idProject}/jornadas`,
           {
             headers: {
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           }
         );
 
         if (data.status === 201) {
-          setTableData(data.data.jornadas);
+          const formattedData = data.data.jornadas.map((jornada) => ({
+            ...jornada,
+            fechaInicio: format(new Date(jornada.fechaInicio), "dd/MM/yyyy HH:mm"),
+            fechaCierre: format(new Date(jornada.fechaCierre), "dd/MM/yyyy HH:mm"),
+          }));
+          sumarTotalHoras(formattedData);
+          sumarTotalCobrar(formattedData)
+          setTableData(formattedData);
         }
       }
     } catch (error) {
@@ -58,9 +80,14 @@ export default function ProjectScreen({ route }) {
 
   return (
     <View style={styles.container}>
-      <Text>PROYECTO: {name} </Text>
-      <Text>Precio por hora: {pricePerHour}</Text>
-      <Text>Id del proyecto: {idProject}</Text>
+      <View style={styles.header}>
+      <Text style={styles.headerText}>PROYECTO: {name} </Text>
+      <Text style={styles.subHeaderText}>Precio por hora: {pricePerHour}</Text>
+      <Text style={styles.subHeaderText}>Horas totales hechas: {totalHoras}</Text>
+      <Text style={styles.subHeaderText}>Total a cobrar: {totalCobrar}</Text>
+      <Text style={styles.subHeaderText}>Id del proyecto: {idProject}</Text>
+      <Text style={styles.instructionText}>Presione un elemento para borrarlo</Text>
+      </View>
       <DataTable
         tableHead={TABLE_HEAD}
         tableData={tableData}
@@ -80,4 +107,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  header: {
+    padding: 16,
+    backgroundColor: "#f1f8ff",
+    alignItems: "center",
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  subHeaderText: {
+    fontSize: 14,
+    color: "#666",
+  },
+  instructionText: {
+    padding: 16,
+    fontSize: 14,
+    textAlign: "center",
+    color: "#666",
+  }
 });
