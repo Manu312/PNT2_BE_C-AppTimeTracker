@@ -1,33 +1,26 @@
 import React, { useState, useContext } from "react";
 import { View, Text, StyleSheet, FlatList, Button, Alert } from "react-native";
 import CardStats from "../components/CardStats";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import AuthContext from '../services/AuthContext';
+import AuthContext from "../services/AuthContext";
+import projectService from "../services/projects";
 
 export default function HomeScreen() {
-  const API_URL = process.env.API_URL;
   const navigation = useNavigation();
   const [dataForTable, setDataForTable] = useState([]);
   const [textWelcome, setTextWelcome] = useState("Welcome to the Home Screen!");
-  const { authData, setAuthData } = useContext(AuthContext)
+  const { authData, setAuthData } = useContext(AuthContext);
 
   const getData = async () => {
     try {
       const token = authData.token;
       if (token) {
-        const data = await axios.get(`${API_URL}/api/v1/project/all`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (data.status === 201) {
-          if (data?.data?.username) {
-            setTextWelcome(`Welcome, ${data?.data?.username}!`);
+        const projects = await projectService.getProjects(token);
+        if (projects.status === 201) {
+          if (projects?.data?.username) {
+            setTextWelcome(`Welcome, ${projects?.data?.username}!`);
           }
-          setDataForTable([...data?.data?.projects]);
+          setDataForTable([...projects?.data?.projects]);
         }
       } else {
         throw new Error("Ha ocurrido un error");

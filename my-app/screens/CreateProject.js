@@ -15,21 +15,16 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import  AuthContext  from '../services/AuthContext';
+import AuthContext from "../services/AuthContext";
+import projectService from "../services/projects";
 
 const CreateProject = () => {
-  const API_URL = process.env.API_URL;
   const navigation = useNavigation();
   const [projectName, setProjectName] = useState("");
   const [pricePerHour, setPricePerHour] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const {authData} = useContext(AuthContext)
-
-  useEffect(() => {
-    console.log(authData);
-  }, []);
+  const { authData } = useContext(AuthContext);
 
   const projectNameOpacity = useSharedValue(projectName ? 0 : 1);
   const pricePerHourOpacity = useSharedValue(projectName ? 0 : 1);
@@ -73,37 +68,28 @@ const CreateProject = () => {
       return;
     }
     try {
-      console.log(authData);
       const token = authData.token;
-        if (token) {
-          const data = await axios.post(
-            `${API_URL}/api/v1/project/create`,
-            {
-              project_name: projectName,
-              price_per_hour: pricePerHour,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: `Bearer ${token}`,
-              },
-            }
+      if (token) {
+        const project = await projectService.CreateProject(
+          projectName,
+          pricePerHour,
+          token
+        );
+
+        if (project.status === 201) {
+          Alert.alert(
+            "Proyecto creado",
+            "¡Tu proyecto ha sido creado con éxito!"
           );
-          if (data.status === 201) {
-            Alert.alert(
-              "Proyecto creado",
-              "¡Tu proyecto ha sido creado con éxito!"
-            );
-    
-            navigation.navigate("HomeScreen");
-          } else {
-            Alert.alert("Error", "Hubo un error al crear el proyecto");
-          }
-        } else{
-          console.log("No hay token");
+
+          navigation.navigate("HomeScreen");
+        } else {
+          Alert.alert("Error", "Hubo un error al crear el proyecto");
         }
-      } catch (error) {
-      // Asegúrate de manejar el error adecuadamente
+      } else {
+        console.log("No hay token");
+      }
+    } catch (error) {
       console.log(error.message, "Error al crear el proyecto");
       Alert.alert("Error", "Hubo un problema al crear el proyecto");
     }
