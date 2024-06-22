@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { registerDataMock } from "../mocks/registerDataMock";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AuthContext from '../services/AuthContext';
 
 export default function RegisterScreen({ navigation }) {
   const API_URL = process.env.API_URL;
@@ -24,6 +25,7 @@ export default function RegisterScreen({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState(
     registerDataMock.confirmPassword
   );
+  const { setAuthData } = useContext(AuthContext)
 
   //@TODO AUGUSTO: DESCOMENTAR ESTO PARA QUE QUEDE BIEN EN PRODUCCION. DATOS MOCKEADOS!!
   /*   
@@ -76,8 +78,12 @@ export default function RegisterScreen({ navigation }) {
           "Registro exitoso",
           "¡Bienvenido! Tu cuenta ha sido creada."
         );
-        await AsyncStorage.setItem("token", sendData.data.token);
-        navigation.replace("HomeScreen");
+        console.log(sendData.data);
+        const authData = {
+          token: sendData.data.token, 
+          data: sendData.data.user
+        }
+        setAuthData(authData);
       } else {
         Alert.alert(
           "Error",

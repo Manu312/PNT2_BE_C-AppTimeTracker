@@ -5,6 +5,7 @@ import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProjectContext } from "../contexts/ProjectContext";
+import  AuthContext  from '../services/AuthContext';
 import { format } from "date-fns";
 
 export default function ProjectScreen({ route }) {
@@ -20,6 +21,8 @@ export default function ProjectScreen({ route }) {
   ];
 
   const [tableData, setTableData] = useState([]);
+  const {authData} = useContext(AuthContext)
+
   const [totalHoras, setTotalHoras] = useState(0);
   const [totalCobrar, setTotalCobrar] = useState(0);
 
@@ -39,8 +42,8 @@ export default function ProjectScreen({ route }) {
 
   const getData = async () => {
     try {
-      const token = await AsyncStorage.getItem("token");
-      if (token !== null) {
+      const token = authData.token;
+      if (token) {
         const data = await axios.get(
           `${API_URL}/api/v1/jornada/${idProject}/jornadas`,
           {

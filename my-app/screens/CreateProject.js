@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -16,8 +16,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import  AuthContext  from '../services/AuthContext';
 
 const CreateProject = () => {
   const API_URL = process.env.API_URL;
@@ -25,6 +25,11 @@ const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
   const [pricePerHour, setPricePerHour] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const {authData} = useContext(AuthContext)
+
+  useEffect(() => {
+    console.log(authData);
+  }, []);
 
   const projectNameOpacity = useSharedValue(projectName ? 0 : 1);
   const pricePerHourOpacity = useSharedValue(projectName ? 0 : 1);
@@ -67,47 +72,40 @@ const CreateProject = () => {
       setErrorMessage("No se olvide de llenar el formulario");
       return;
     }
-
     try {
-      const value = await AsyncStorage.getItem("token");
-
-      if (value !== null) {
-        const data = await axios.post(
-          `${API_URL}/api/v1/project/create`,
-          {
-            project_name: projectName,
-            price_per_hour: pricePerHour,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: `Bearer ${value}`,
+      console.log(authData);
+      const token = authData.token;
+        if (token) {
+          const data = await axios.post(
+            `${API_URL}/api/v1/project/create`,
+            {
+              project_name: projectName,
+              price_per_hour: pricePerHour,
             },
-          }
-        );
-        if (data.status === 201) {
-          Alert.alert(
-            "Proyecto creado",
-            "¡Tu proyecto ha sido creado con éxito!"
+            {
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
-
-          navigation.navigate("HomeScreen");
-        } else {
-          Alert.alert("Error", "Hubo un error al crear el proyecto");
+          if (data.status === 201) {
+            Alert.alert(
+              "Proyecto creado",
+              "¡Tu proyecto ha sido creado con éxito!"
+            );
+    
+            navigation.navigate("HomeScreen");
+          } else {
+            Alert.alert("Error", "Hubo un error al crear el proyecto");
+          }
+        } else{
+          console.log("No hay token");
         }
-      }
-
-      /*const data = await axios.post(
-        "http://192.168.100.56:8000/api/v1/auth/test",
-        {
-          project_name: projectName,
-          price_per_hour: pricePerHour,
-          boca: "boca",
-        }
-      );
-      console.log(data.data);*/
-    } catch (error) {
-      console.error("Error sending data: ", error);
+      } catch (error) {
+      // Asegúrate de manejar el error adecuadamente
+      console.log(error.message, "Error al crear el proyecto");
+      Alert.alert("Error", "Hubo un problema al crear el proyecto");
     }
   };
 

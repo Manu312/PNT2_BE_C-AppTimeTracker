@@ -1,24 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, StyleSheet, FlatList, Button, Alert } from "react-native";
 import CardStats from "../components/CardStats";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import AuthContext from '../services/AuthContext';
 
 export default function HomeScreen() {
   const API_URL = process.env.API_URL;
   const navigation = useNavigation();
   const [dataForTable, setDataForTable] = useState([]);
   const [textWelcome, setTextWelcome] = useState("Welcome to the Home Screen!");
+  const { authData, setAuthData } = useContext(AuthContext)
 
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem("token");
-      if (value !== null) {
+      const token = authData.token;
+      if (token) {
         const data = await axios.get(`${API_URL}/api/v1/project/all`, {
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-            Authorization: `Bearer ${value}`,
           },
         });
         if (data.status === 201) {
