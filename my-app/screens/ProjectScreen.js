@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Modal, Button } from "react-native";
 import DataTable from "../components/DataTable";
-import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import { ProjectContext } from "../contexts/ProjectContext";
 import AuthContext from "../services/AuthContext";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import jornadaService from "../services/jornadas";
+import ModalCustom from "../components/ModalCustom";
 
 export default function ProjectScreen({ route }) {
   const { state } = useContext(ProjectContext);
@@ -20,14 +20,39 @@ export default function ProjectScreen({ route }) {
 
   const [tableData, setTableData] = useState([]);
   const { authData } = useContext(AuthContext);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const [totalHoras, setTotalHoras] = useState(0);
   const [totalCobrar, setTotalCobrar] = useState(0);
+  const [idJornada, setIdJornada] = useState(null);
 
   const handleTableData = (id) => {
-    setTableData(tableData.filter((item) => item.id !== id));
+    setModalVisible(true);
+    setIdJornada(id);
+    //setTableData(tableData.filter((item) => item.id !== id));
   };
 
+  const deleteJornada = async () => {
+    try {
+      const token = authData.token;
+
+      if (token) {
+        const jornada = await jornadaService.deleteJornada(
+          idJornada,
+          token,
+          idProject
+        );
+
+        if (jornada.status === 200) {
+          getData();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      console.log(error.message, "Error en deleteJornada de ProjectScreen");
+      console.log(error, "Error en deleteJornada de ProjectScreen");
+    }
+  };
   const sumarTotalHoras = (data) => {
     const horasSuma = data.reduce((acc, item) => acc + item.hoursWorked, 0);
     setTotalHoras(horasSuma);
@@ -96,11 +121,27 @@ export default function ProjectScreen({ route }) {
         tableData={tableData}
         handleTableData={handleTableData}
       />
+      <ModalCustom
+        isVisible={isModalVisible}
+        confirm={deleteJornada}
+        cancel={() => {
+          setModalVisible(false);
+        }}
+        titleConfirm="Eliminar"
+        titleCancel="Cancelar"
+        textModal="¿Estás seguro que deseas eliminar esta jornada?"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
   container: {
     flex: 1,
     justifyContent: "center",
