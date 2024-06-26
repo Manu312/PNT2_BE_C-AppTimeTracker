@@ -80,7 +80,7 @@ const CreateJornada = ({ route }) => {
   const handleEndConfirm = (date) => {
     if (selectedDate && date <= selectedDate) {
       setDateErrorMessage(
-        "La fecha de cierre no puede ser anterior a la fecha de inicio. Por favor, seleccione una fecha de inicio válida."
+        "La fecha de cierre no puede ser anterior o igual a la fecha de inicio. Por favor, seleccione una fecha de inicio válida."
       );
       setShowDateTimePicker(true);
     } else {
