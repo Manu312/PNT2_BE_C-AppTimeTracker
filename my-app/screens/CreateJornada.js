@@ -10,16 +10,15 @@ import {
   Alert,
 } from "react-native";
 
-import axios from "axios";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { format } from "date-fns";
 //import {  parse } from "date-fns";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProjectContext } from "../contexts/ProjectContext";
+import AuthContext from "../services/AuthContext";
+import jornadaService from "../services/jornadas";
 
 const CreateJornada = ({ route }) => {
-  const API_URL = process.env.API_URL;
   const navigation = useNavigation();
   const [errorMessage, setErrorMessage] = useState("");
   const [dateErrorMessage, setDateErrorMessage] = useState("");
@@ -33,6 +32,7 @@ const CreateJornada = ({ route }) => {
   const [price, setPrice] = useState(0);
   const { state } = useContext(ProjectContext);
   const { name, pricePerHour, idProject } = state.project;
+  const { authData } = useContext(AuthContext);
 
   /*const defaultStartDate = parse("27/06/2024 17:00", "dd/MM/yyyy HH:mm", new Date());
   const defaultEndDate = parse("27/06/2024 20:00", "dd/MM/yyyy HH:mm", new Date());
@@ -103,27 +103,19 @@ const CreateJornada = ({ route }) => {
 
     setErrorMessage("");
     try {
-      const value = await AsyncStorage.getItem("token");
+      const token = authData.token;
 
-      if (value !== null) {
-        const data = await axios.post(
-          `${API_URL}/api/v1/jornada/create`,
-          {
-            fechaInicio: selectedDate,
-            fechaCierre: selectedEndDate,
-            hoursWorked: hoursWorked,
-            price: price,
-            idProject: idProject,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${value}`,
-            },
-          }
+      if (token !== null) {
+        const jornadaCreated = await jornadaService.createJornada(
+          selectedDate,
+          selectedEndDate,
+          hoursWorked,
+          price,
+          idProject,
+          token
         );
 
-        if (data.status === 201) {
+        if (jornadaCreated.status === 201) {
           Alert.alert("Jornada creada", "La jornada ha sido creada con éxito");
           navigation.navigate("ProjectScreen");
         }
