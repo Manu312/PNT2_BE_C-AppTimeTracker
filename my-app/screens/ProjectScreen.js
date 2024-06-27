@@ -7,6 +7,7 @@ import AuthContext from "../services/AuthContext";
 import { format, set } from "date-fns";
 import jornadaService from "../services/jornadas";
 import ModalCustom from "../components/ModalCustom";
+import Loading from "../components/Loading";
 
 export default function ProjectScreen({ route }) {
   const { state } = useContext(ProjectContext);
@@ -21,7 +22,7 @@ export default function ProjectScreen({ route }) {
   const [tableData, setTableData] = useState([]);
   const { authData } = useContext(AuthContext);
   const [isModalVisible, setModalVisible] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [totalHoras, setTotalHoras] = useState(0);
   const [totalCobrar, setTotalCobrar] = useState(0);
   const [idJornada, setIdJornada] = useState(null);
@@ -34,6 +35,7 @@ export default function ProjectScreen({ route }) {
 
   const deleteJornada = async () => {
     try {
+      setLoading(true);
       const token = authData.token;
 
       if (token) {
@@ -48,6 +50,7 @@ export default function ProjectScreen({ route }) {
         }
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
       console.log(error.message, "Error en deleteJornada de ProjectScreen");
       console.log(error, "Error en deleteJornada de ProjectScreen");
@@ -65,12 +68,14 @@ export default function ProjectScreen({ route }) {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const token = authData.token;
 
       if (token) {
         const jornadas = await jornadaService.getJornadas(idProject, token);
 
         if (jornadas.status === 201) {
+          setLoading(false);
           const formattedData = jornadas.data.jornadas.map((jornada) => ({
             ...jornada,
             fechaInicio: format(
@@ -88,6 +93,8 @@ export default function ProjectScreen({ route }) {
         }
       }
     } catch (error) {
+      setLoading(false);
+
       console.log(error.message, "Error en getData de ProjectScreen");
       console.log(error, "Error en getData de ProjectScreen");
     }
@@ -101,37 +108,48 @@ export default function ProjectScreen({ route }) {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>PROYECTO: {name} </Text>
-        <Text style={styles.subHeaderText}>
-          Precio por hora: {pricePerHour}
-        </Text>
-        <Text style={styles.subHeaderText}>
-          Horas totales hechas: {totalHoras}
-        </Text>
-        <Text style={styles.subHeaderText}>Total a cobrar: {totalCobrar}</Text>
-        <Text style={styles.subHeaderText}>Id del proyecto: {idProject}</Text>
-        <Text style={styles.instructionText}>
-          Presione un elemento para borrarlo
-        </Text>
+    <>
+      {loading && <Loading />}
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>PROYECTO: {name} </Text>
+          <Text style={styles.subHeaderText}>
+            Precio por hora: {pricePerHour}
+          </Text>
+          <Text style={styles.subHeaderText}>
+            Horas totales hechas: {totalHoras}
+          </Text>
+          <Text style={styles.subHeaderText}>
+            Total a cobrar: {totalCobrar}
+          </Text>
+          <Text style={styles.instructionText}>
+            Presione un elemento para borrarlo
+          </Text>
+        </View>
+        {tableData.length > 0 ? (
+          <DataTable
+            tableHead={TABLE_HEAD}
+            tableData={tableData}
+            handleTableData={handleTableData}
+          />
+        ) : (
+          <View style={{ justifyContent: "center", marginTop: 100 }}>
+            <Text>Aún no se han creado jornadas.</Text>
+          </View>
+        )}
+
+        <ModalCustom
+          isVisible={isModalVisible}
+          confirm={deleteJornada}
+          cancel={() => {
+            setModalVisible(false);
+          }}
+          titleConfirm="Eliminar"
+          titleCancel="Cancelar"
+          textModal="¿Estás seguro que deseas eliminar esta jornada?"
+        />
       </View>
-      <DataTable
-        tableHead={TABLE_HEAD}
-        tableData={tableData}
-        handleTableData={handleTableData}
-      />
-      <ModalCustom
-        isVisible={isModalVisible}
-        confirm={deleteJornada}
-        cancel={() => {
-          setModalVisible(false);
-        }}
-        titleConfirm="Eliminar"
-        titleCancel="Cancelar"
-        textModal="¿Estás seguro que deseas eliminar esta jornada?"
-      />
-    </View>
+    </>
   );
 }
 

@@ -18,6 +18,8 @@ import Animated, {
 import { useNavigation } from "@react-navigation/native";
 import AuthContext from "../services/AuthContext";
 import projectService from "../services/projects";
+import Loading from "../components/Loading";
+import { set } from "date-fns";
 
 const CreateProject = () => {
   const navigation = useNavigation();
@@ -25,6 +27,7 @@ const CreateProject = () => {
   const [pricePerHour, setPricePerHour] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { authData } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   const projectNameOpacity = useSharedValue(projectName ? 0 : 1);
   const pricePerHourOpacity = useSharedValue(projectName ? 0 : 1);
@@ -68,6 +71,7 @@ const CreateProject = () => {
       return;
     }
     try {
+      setLoading(true);
       const token = authData.token;
       if (token) {
         const project = await projectService.CreateProject(
@@ -77,6 +81,7 @@ const CreateProject = () => {
         );
 
         if (project.status === 201) {
+          setLoading(false);
           Alert.alert(
             "Proyecto creado",
             "¡Tu proyecto ha sido creado con éxito!"
@@ -84,79 +89,85 @@ const CreateProject = () => {
 
           navigation.navigate("HomeScreen");
         } else {
+          setLoading(false);
           Alert.alert("Error", "Hubo un error al crear el proyecto");
         }
       } else {
+        setLoading(false);
         console.log("No hay token");
       }
     } catch (error) {
+      setLoading(false);
       console.log(error.message, "Error al crear el proyecto");
       Alert.alert("Error", "Hubo un problema al crear el proyecto");
     }
   };
 
   return (
-    <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <View style={styles.container}>
-        <Text style={styles.logo}>Crea tu proyecto</Text>
-        <View style={styles.inputView}>
-          <Animated.Text
-            style={[styles.placeholder, projectNamePlaceholderStyle]}
-          >
-            Nombre del proyecto
-          </Animated.Text>
-          <TextInput
-            style={styles.inputText}
-            onChangeText={(text) => {
-              setProjectName(text);
-              if (text !== "") {
-                projectNameOpacity.value = withTiming(0, {
-                  duration: 300,
-                  easing: Easing.inOut(Easing.ease),
-                });
-              }
+    <>
+      {loading && <Loading />}
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <View style={styles.container}>
+          <Text style={styles.logo}>Crea tu proyecto</Text>
+          <View style={styles.inputView}>
+            <Animated.Text
+              style={[styles.placeholder, projectNamePlaceholderStyle]}
+            >
+              Nombre del proyecto
+            </Animated.Text>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={(text) => {
+                setProjectName(text);
+                if (text !== "") {
+                  projectNameOpacity.value = withTiming(0, {
+                    duration: 300,
+                    easing: Easing.inOut(Easing.ease),
+                  });
+                }
+              }}
+              value={projectName}
+              onFocus={() => handleFocus(projectNameOpacity)}
+              onBlur={() => handleBlur(projectName, projectNameOpacity)}
+            />
+          </View>
+          <View style={styles.inputView}>
+            <Animated.Text
+              style={[styles.placeholder, pricePerHourPlaceholderStyle]}
+            >
+              Precio por hora
+            </Animated.Text>
+            <TextInput
+              keyboardType="numeric"
+              style={styles.inputText}
+              onChangeText={(text) => {
+                setPricePerHour(text);
+                if (text !== "") {
+                  pricePerHourOpacity.value = withTiming(0, {
+                    duration: 300,
+                    easing: Easing.inOut(Easing.ease),
+                  });
+                }
+              }}
+              value={pricePerHour}
+              onFocus={() => handleFocus(pricePerHourOpacity)}
+              onBlur={() => handleBlur(pricePerHour, pricePerHourOpacity)}
+            />
+          </View>
+
+          {errorMessage ? (
+            <TextInput style={styles.errorText}>{errorMessage}</TextInput>
+          ) : null}
+
+          <Button
+            title="Crear Proyecto"
+            onPress={() => {
+              sendData();
             }}
-            value={projectName}
-            onFocus={() => handleFocus(projectNameOpacity)}
-            onBlur={() => handleBlur(projectName, projectNameOpacity)}
           />
         </View>
-        <View style={styles.inputView}>
-          <Animated.Text
-            style={[styles.placeholder, pricePerHourPlaceholderStyle]}
-          >
-            Precio por hora
-          </Animated.Text>
-          <TextInput
-            keyboardType="numeric"
-            style={styles.inputText}
-            onChangeText={(text) => {
-              setPricePerHour(text);
-              if (text !== "") {
-                pricePerHourOpacity.value = withTiming(0, {
-                  duration: 300,
-                  easing: Easing.inOut(Easing.ease),
-                });
-              }
-            }}
-            value={pricePerHour}
-            onFocus={() => handleFocus(pricePerHourOpacity)}
-            onBlur={() => handleBlur(pricePerHour, pricePerHourOpacity)}
-          />
-        </View>
-
-        {errorMessage ? (
-          <TextInput style={styles.errorText}>{errorMessage}</TextInput>
-        ) : null}
-
-        <Button
-          title="Crear Proyecto"
-          onPress={() => {
-            sendData();
-          }}
-        />
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </>
   );
 };
 

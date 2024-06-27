@@ -4,28 +4,34 @@ import CardStats from "../components/CardStats";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AuthContext from "../services/AuthContext";
 import projectService from "../services/projects";
+import Loading from "../components/Loading";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [dataForTable, setDataForTable] = useState([]);
   const [textWelcome, setTextWelcome] = useState("Welcome to the Home Screen!");
   const { authData, setAuthData } = useContext(AuthContext);
-
+  const [loading, setLoading] = useState(false);
   const getData = async () => {
     try {
+      setLoading(true);
       const token = authData.token;
       if (token) {
         const projects = await projectService.getProjects(token);
         if (projects.status === 201) {
+          setLoading(false);
+
           if (projects?.data?.username) {
             setTextWelcome(`Welcome, ${projects?.data?.username}!`);
           }
           setDataForTable([...projects?.data?.projects]);
         }
       } else {
+        setLoading(false);
         throw new Error("Ha ocurrido un error");
       }
     } catch (e) {
+      setLoading(false);
       Alert.alert("Error", "Ha ocurrido un error, intentelo nuevamente.");
     }
   };
@@ -38,6 +44,7 @@ export default function HomeScreen() {
 
   return (
     <>
+      {loading && <Loading />}
       <View style={styles.container}>
         <Text style={styles.text}>{textWelcome}</Text>
         <View>
