@@ -12,11 +12,10 @@ import {
   Animated,
 } from "react-native";
 import { registerDataMock } from "../mocks/registerDataMock";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import AuthContext from '../services/AuthContext';
+import AuthContext from "../services/AuthContext";
+import { API_URL } from "@env";
 
 export default function RegisterScreen({ navigation }) {
-  const API_URL = process.env.API_URL;
   const [firstName, setFirstName] = useState(registerDataMock.firstName);
   const [lastName, setLastName] = useState(registerDataMock.lastName);
   const [email, setEmail] = useState(registerDataMock.email);
@@ -25,7 +24,7 @@ export default function RegisterScreen({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState(
     registerDataMock.confirmPassword
   );
-  const { setAuthData } = useContext(AuthContext)
+  const { setAuthData } = useContext(AuthContext);
 
   //@TODO AUGUSTO: DESCOMENTAR ESTO PARA QUE QUEDE BIEN EN PRODUCCION. DATOS MOCKEADOS!!
   /*   
@@ -80,9 +79,9 @@ export default function RegisterScreen({ navigation }) {
         );
         console.log(sendData.data);
         const authData = {
-          token: sendData.data.token, 
-          data: sendData.data.user
-        }
+          token: sendData.data.token,
+          data: sendData.data.user,
+        };
         setAuthData(authData);
       } else {
         Alert.alert(

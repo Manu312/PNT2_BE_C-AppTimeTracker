@@ -36,10 +36,8 @@ const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 10,
     padding: 10,
-    elevation: 3,
     minWidth: 150,
     minHeight: 150,
-
     overflow: "break-word",
     backgroundColor: "rgba(251,91,90,0.21)",
     borderColor: "#fff",
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   projectTitle: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#fb5b5a",
     flexWrap: "wrap",

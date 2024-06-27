@@ -103,7 +103,7 @@ const CreateProject = () => {
           <Animated.Text
             style={[styles.placeholder, projectNamePlaceholderStyle]}
           >
-            Project name
+            Nombre del proyecto
           </Animated.Text>
           <TextInput
             style={styles.inputText}
@@ -150,7 +150,7 @@ const CreateProject = () => {
         ) : null}
 
         <Button
-          title="Enviar"
+          title="Crear Proyecto"
           onPress={() => {
             sendData();
           }}

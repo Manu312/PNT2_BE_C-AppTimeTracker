@@ -41,7 +41,7 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <Text style={styles.text}>{textWelcome}</Text>
         <View>
-          <Text>Statsss</Text>
+          <Text>Aquí verá sus proyectos</Text>
         </View>
         <View style={styles.containercard}>
           {dataForTable.length === 0 ? (
@@ -51,7 +51,6 @@ export default function HomeScreen() {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginTop: 90,
               }}
             >
               <Text style={{ margin: 20, fontSize: 20 }}>

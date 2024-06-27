@@ -16,27 +16,26 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import AuthContext from '../services/AuthContext';
-
+import AuthContext from "../services/AuthContext";
+import { API_URL } from "@env";
 export default function LoginScreen() {
-  const API_URL = process.env.API_URL;
   const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const usernameOpacity = useSharedValue(username ? 0 : 1);
   const passwordOpacity = useSharedValue(password ? 0 : 1);
-  const { setAuthData } = useContext(AuthContext)
+  const { setAuthData } = useContext(AuthContext);
 
   const handleLogin = async () => {
     try {
+      console.log("API_URL", `${API_URL}/api/v1/auth/login`);
       const response = await axios.post(
         `${API_URL}/api/v1/auth/login`,
         {
-          username,
-          password,
+          username: username,
+          password: password,
         },
         {
           headers: {
@@ -44,19 +43,21 @@ export default function LoginScreen() {
           },
         }
       );
+      console.log("la response");
 
       if (response.status === 200) {
         console.log(response.data);
         const authData = {
-          token: response.data.token, 
-          data: response.data.user
-        }
+          token: response.data.token,
+          data: response.data.user,
+        };
         setAuthData(authData);
       } else {
         Alert.alert("Usuario o contraseña incorrecta", response.error);
       }
     } catch (error) {
       console.error(error);
+      console.log(error.message);
       if (error.response && error.response.data) {
         Alert.alert("Error", error.response.data.error);
       } else {
@@ -69,10 +70,11 @@ export default function LoginScreen() {
     try {
       const response = await axios.get(`${API_URL}/test`);
       console.log(response.data);
+      alert(response.data);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleFocus = (opacity) => {
     opacity.value = withTiming(0, {
@@ -112,7 +114,7 @@ export default function LoginScreen() {
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
         <Text style={styles.logo}>MyTime Tracker</Text>
-        <Button title="Go to Register" onPress={() => llamaTest()} />
+        <Button title="test connection" onPress={() => llamaTest()} />
         <View style={styles.inputView}>
           <Animated.Text style={[styles.placeholder, usernamePlaceholderStyle]}>
             Username

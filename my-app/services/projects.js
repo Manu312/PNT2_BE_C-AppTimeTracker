@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const API_URL = process.env.API_URL;
+import { API_URL } from "@env";
 
 const getProjects = async (token) => {
   const projects = await axios.get(`${API_URL}/api/v1/project/all`, {
