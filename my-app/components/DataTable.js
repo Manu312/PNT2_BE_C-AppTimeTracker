@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f1f8ff",
   },
   row: {
-    height: 40,
+    height: 60,
     backgroundColor: "#fff",
   },
   text: {
