@@ -43,16 +43,15 @@ const createJornada = async (
   return jornadaCreated;
 };
 const deleteJornada = async (idJornada, token, idProject) => {
-  console.log(idJornada, token, idProject);
-  console.log(`${API_URL}/api/v1/${idProject}/jornadas/${idJornada}`);
   const jornada = await axios.delete(
-    `${API_URL}/api/v1/${idProject}/jornadas/${idJornada}`,
+    `${API_URL}/api/v1/jornada/${idProject}/jornadas/${idJornada}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
+  console.log(jornada);
   return jornada;
 };
 export default {

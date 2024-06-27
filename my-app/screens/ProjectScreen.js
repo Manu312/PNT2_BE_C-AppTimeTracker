@@ -46,11 +46,14 @@ export default function ProjectScreen({ route }) {
         );
 
         if (jornada.status === 200) {
+          setModalVisible(false);
           getData();
         }
       }
     } catch (error) {
       setLoading(false);
+      setModalVisible(false);
+
       console.log(error);
       console.log(error.message, "Error en deleteJornada de ProjectScreen");
       console.log(error, "Error en deleteJornada de ProjectScreen");
@@ -94,7 +97,6 @@ export default function ProjectScreen({ route }) {
       }
     } catch (error) {
       setLoading(false);
-
       console.log(error.message, "Error en getData de ProjectScreen");
       console.log(error, "Error en getData de ProjectScreen");
     }
