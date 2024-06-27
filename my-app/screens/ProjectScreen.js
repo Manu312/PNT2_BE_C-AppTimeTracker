@@ -113,17 +113,14 @@ export default function ProjectScreen({ route }) {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>PROYECTO: {name} </Text>
-          <Text style={styles.subHeaderText}>
+          <Text style={styles.headerText}>
             Precio por hora: {pricePerHour}
           </Text>
-          <Text style={styles.subHeaderText}>
+          <Text style={styles.headerText}>
             Horas totales hechas: {totalHoras}
           </Text>
-          <Text style={styles.subHeaderText}>
+          <Text style={styles.headerText}>
             Total a cobrar: {totalCobrar}
-          </Text>
-          <Text style={styles.instructionText}>
-            Presione un elemento para borrarlo
           </Text>
         </View>
         {tableData.length > 0 ? (
@@ -181,12 +178,6 @@ const styles = StyleSheet.create({
   },
   subHeaderText: {
     fontSize: 14,
-    color: "#666",
-  },
-  instructionText: {
-    padding: 16,
-    fontSize: 14,
-    textAlign: "center",
     color: "#666",
   },
 });

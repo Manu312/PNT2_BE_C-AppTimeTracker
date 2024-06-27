@@ -22,7 +22,7 @@ export default function HomeScreen() {
           setLoading(false);
 
           if (projects?.data?.username) {
-            setTextWelcome(`Welcome, ${projects?.data?.username}!`);
+            setTextWelcome(`Bienvenido, ${projects?.data?.username}!`);
           }
           setDataForTable([...projects?.data?.projects]);
         }
