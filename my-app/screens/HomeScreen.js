@@ -9,7 +9,7 @@ import Loading from "../components/Loading";
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [dataForTable, setDataForTable] = useState([]);
-  const [textWelcome, setTextWelcome] = useState("Welcome to the Home Screen!");
+  const [textWelcome, setTextWelcome] = useState("Bienvenido!");
   const { authData, setAuthData } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const getData = async () => {
