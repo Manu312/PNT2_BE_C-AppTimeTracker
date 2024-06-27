@@ -16,24 +16,14 @@ import AuthContext from "../services/AuthContext";
 import { API_URL } from "@env";
 
 export default function RegisterScreen({ navigation }) {
-  const [firstName, setFirstName] = useState(registerDataMock.firstName);
-  const [lastName, setLastName] = useState(registerDataMock.lastName);
-  const [email, setEmail] = useState(registerDataMock.email);
-  const [username, setUsername] = useState(registerDataMock.username);
-  const [password, setPassword] = useState(registerDataMock.password);
-  const [confirmPassword, setConfirmPassword] = useState(
-    registerDataMock.confirmPassword
-  );
   const { setAuthData } = useContext(AuthContext);
 
-  //@TODO AUGUSTO: DESCOMENTAR ESTO PARA QUE QUEDE BIEN EN PRODUCCION. DATOS MOCKEADOS!!
-  /*   
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState(""); */
+  const [lastName, setLastName] = useState("");
 
   const [focusedInput, setFocusedInput] = useState(null); // For focus animation
   const [opacityAnim] = useState(new Animated.Value(1)); // Initial opacity
@@ -72,15 +62,14 @@ export default function RegisterScreen({ navigation }) {
         }
       );
 
-      if (sendData.status === 201) {
+      if (sendData?.status === 201) {
         Alert.alert(
           "Registro exitoso",
           "¡Bienvenido! Tu cuenta ha sido creada."
         );
-        console.log(sendData.data);
         const authData = {
-          token: sendData.data.token,
-          data: sendData.data.user,
+          token: sendData?.data?.token,
+          data: sendData?.data?.user,
         };
         setAuthData(authData);
       } else {
@@ -92,7 +81,7 @@ export default function RegisterScreen({ navigation }) {
     } catch (error) {
       console.error("Error sending data: ", error);
       if (error.response && error.response.data) {
-        Alert.alert("Error", error.response.data.error);
+        Alert.alert("Error", "El email ya existe.");
       } else {
         Alert.alert("Error", "Ha ocurrido un error, intentelo nuevamente.");
       }

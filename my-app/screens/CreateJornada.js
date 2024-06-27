@@ -134,7 +134,6 @@ const CreateJornada = ({ route }) => {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <Text>ID DEL PROYECTO: {idProject}</Text>
         <Text style={styles.logo}>Anotá tu jornada</Text>
         {showDateTimePicker && (
           <Button
@@ -148,6 +147,7 @@ const CreateJornada = ({ route }) => {
             {selectedDate ? format(selectedDate, "dd/MM/yyyy HH:mm") : ""}
           </Text>
         )}
+        <View style={{ height: 20 }}></View>
         {showEndDateTimePicker && (
           <Button
             title="Seleccionar fecha de cierre"
@@ -174,6 +174,7 @@ const CreateJornada = ({ route }) => {
           onConfirm={handleEndConfirm}
           onCancel={hideEndDatePicker}
         />
+        <View style={{ height: 20 }}></View>
 
         <View style={styles.inputView}>
           <TextInput

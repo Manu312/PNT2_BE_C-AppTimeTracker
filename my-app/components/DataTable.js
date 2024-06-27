@@ -27,7 +27,10 @@ const DataTable = ({ tableHead, tableData, handleTableData }) => {
                     rowData.hoursWorked,
                     rowData.price,
                   ]}
-                  style={[styles.row, index % 2 && { backgroundColor: "#f9f9f9" }]}
+                  style={[
+                    styles.row,
+                    index % 2 && { backgroundColor: "#f9f9f9" },
+                  ]}
                   textStyle={styles.text}
                 />
               </TouchableOpacity>
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   head: {
-    height: 40,
+    height: 60,
     backgroundColor: "#f1f8ff",
   },
   row: {
